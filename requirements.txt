@@ -1,0 +1,4 @@
+pylatexenc
+TexSoup
+bibtexparser
+proselint
