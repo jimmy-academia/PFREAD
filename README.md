@@ -16,7 +16,7 @@ Intermediate files are written to the system's temporary directory under `pfread
 macro replacement.
 
 ```bash
-python -m pfread.main  # or specify a different path
+python main.py  # or specify a different path
 ```
 
 Run tests with `pytest`:

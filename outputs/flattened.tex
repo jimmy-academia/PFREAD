@@ -1,0 +1,1627 @@
+\documentclass[conference]{IEEEtran}
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\usepackage{dsfont}
+\newcommand{\1}[1]{\mathds{1}\left[#1\right]}
+
+% for table...
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{xspace}
+
+% algorithm
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algdef{SE}[REPEAT]{Repeat}{Until}{\algorithmicrepeat}[1]{\algorithmicuntil\ #1}
+
+% figure
+\usepackage{graphicx}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+% reference
+\usepackage{hyperref}
+\usepackage{url}
+
+
+\usepackage{newfloat}
+\usepackage{amsmath,bm}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{braket}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{property}{Property}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{corollary}{Corollary}
+\newenvironment{proofsketch}{\proof[Proof Sketch]}{\endproof}
+  
+\mathchardef\dash="2D
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand*{\defeq}{\equiv}
+% \newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+\newcommand{\lrfloor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+
+
+\newcommand{\etal}{et al.}
+\newcommand{\ie}{i.e.}
+\newcommand{\eg}{e.g.}
+\newcommand\norm[1]{\lVert#1\rVert}
+
+
+\newcommand{\methodfull}{Breeding-aware NFT Equilibrium Recommen\-dation\xspace}
+\newcommand{\methoduline}{\underline{B}reeding-\underline{a}ware \underline{N}F\underline{T} \underline{E}quilibrium \underline{R}ecommen\-dation\xspace}
+\newcommand{\method}{\textsf{BANTER}\xspace}
+% \newcommand{\method}{BANTER\xspace}
+\newcommand{\problem}{NP$^3$R\xspace}
+\newcommand{\problemfull}{NFT Project Pricing/Purchasing Recommendation\xspace}
+\newcommand{\equilib}{NP$^3$R\xspace}
+\newcommand{\equilibfull}{NFT Project Pricing/Purchasing\xspace}
+
+
+\newcommand{\problema}{Seller Pricing Recommendation\xspace}
+\newcommand{\proba}{SPR\xspace}
+\newcommand{\problemb}{Buyer Purchasing Recommendation\xspace}
+\newcommand{\probb}{BPR\xspace}
+
+
+\newcommand{\schemes}{optimal breeding schemes\xspace}
+\newcommand{\homosfull}{Optimal Parent Pair Selection\xspace}
+\newcommand{\homos}{OPPS\xspace}
+\newcommand{\hetersfull}{Heterogeneous Parent Set Selection\xspace}
+\newcommand{\heters}{HPSS\xspace}
+\newcommand{\breedrate}{child breeding rate\xspace}
+
+\newcommand{\homob}{Homogeneous Breeding\xspace}
+\newcommand{\heterb}{Heterogeneous Breeding\xspace}
+\newcommand{\childb}{Child-project Breeding\xspace}
+
+\newcommand{\finddemand}{\textsc{NFT-rec}\xspace}
+\newcommand{\findprice}{\textsc{Price-rec}\xspace}
+\newcommand{\initprice}{\textsc{pap}\xspace}
+
+\usepackage{mathrsfs}
+\usepackage{soul}
+\setul{0.2ex}{0.01ex}
+% \usepackage[normalem]{ulem}
+
+\usepackage{comment}
+
+\newcommand{\bin}[1]{}
+\usepackage[dvipsnames]{xcolor}
+\newcommand{\n}[1]{{\color{blue}#1}}
+\newcommand{\m}[1]{{\color{SpringGreen4}#1}}
+\newcommand{\p}[1]{{\color{Sienna4}#1}}
+
+\newcommand{\todo}[1]{{\color{orange}#1}}
+\newcommand{\hw}[1]{{\color{red}#1}}
+\newcommand{\fix}[1]{{\color{red}#1}}
+
+% \usepackage[long]{optional} 
+\usepackage[short]{optional}  
+
+\newcommand{\inbin}[1]{\opt{bin}{#1}}
+\newcommand{\inlong}[1]{\opt{long}{#1}}
+\newcommand{\inshort}[1]{\opt{short}{#1}}
+\newcommand{\isl}[2]{\opt{short}{#1}\opt{long}{#2}}
+
+\newcommand{\anonymizedcode}{\url{https://anonymous.4open.science/r/ICDM-DFB4/}\xspace}
+
+\begin{document}
+
+\title{Equilibrium-Based NFT Marketplace Recommendation for NFTs with Breeding}
+
+\author{\IEEEauthorblockN{Anonymous Authors}}
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+% \author{\IEEEauthorblockN{Michael Shell}
+% \IEEEauthorblockA{School of Electrical and\\Computer Engineering\\
+% Georgia Institute of Technology\\
+% Atlanta, Georgia 30332--0250\\
+% Email: http://www.michaelshell.org/contact.html}
+% \and
+% \IEEEauthorblockN{Homer Simpson}
+% \IEEEauthorblockA{Twentieth Century Fox\\
+% Springfield, USA\\
+% Email: homer@thesimpsons.com}
+% \and
+% \IEEEauthorblockN{James Kirk\\ and Montgomery Scott}
+% \IEEEauthorblockA{Starfleet Academy\\
+% San Francisco, California 96678--2391\\
+% Telephone: (800) 555--1212\\
+% Fax: (888) 555--1212}}
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+% 
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3}, 
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+% make the title area
+\maketitle
+\begin{abstract}
+Recently, Non-Fungible Tokens (NFTs) have attracted increasing attention as valuable digital assets, with various applications including smart contracts and virtual warrants. However, NFT marketplaces face complex challenges in simultaneously recommending optimal pricing to sellers and desirable assets to buyers. Unlike conventional marketplaces that focus only on balancing demand and supply between sellers and buyers, these tasks are complicated by intricate value interdependencies arising from diverse buyer preferences, various budgets, \textit{trait} rarities, and the unprecedented \textit{breeding mechanisms}. This paper formulates the \emph{\problemfull (\problem)} problem, aiming to achieve a competitive equilibrium that concurrently optimizes seller revenue and buyer utility. We introduce \emph{\method}, an iterative algorithm that jointly determines (1) optimal NFT purchases for buyers (via \finddemand), considering breeding utility and current prices; and (2) optimal pricing for sellers (via \findprice), based on aggregated demand from \finddemand. To efficiently manage the combinatorial complexity of breeding, we devise \emph{\homosfull (\homos)} and \emph{\hetersfull (\heters)} schemes. Theoretical analysis guarantees \method to converge to a competitive equilibrium. Experiments on five real-world NFT datasets demonstrate its effectiveness in enhancing both seller revenue and average buyer utility. Source code: \anonymizedcode
+\end{abstract}
+
+% Non-Fungible Token (NFT) marketplaces face complex challenges in simultaneously recommending optimal pricing to sellers and desired assets to buyers. These tasks are complicated by intricate value interdependencies due to buyer preferences, budgets, trait rarities, and the unprecedented breeding mechanisms. This paper formulates the NFT Project Pricing/Purchasing Recommendation (NP3R) problem, aiming to achieve a competitive equilibrium that concurrently optimizes seller revenue and buyer utility. We introduce BANTER, an iterative algorithm that jointly determines (1) optimal NFT purchases for buyers (via NFT-REC), considering breeding utility and current prices; and (2) optimal pricing for sellers (via PRICE-REC), based on aggregated demand from NFT-REC. To efficiently manage the combinatorial complexity of breeding, we devise Optimal Parent Pair Selection (OPPS) and Heterogeneous Parent Set Selection (HPSS) schemes. Theoretical analysis guarantees BANTER to converge to a competitive equilibrium. Experiments on five real-world NFT datasets demonstrate its effectiveness in enhancing both seller revenue and average buyer utility. Source code: https://anonymous.4open.science/r/ICDM-DFB4/
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+Non-fungible tokens (NFTs) have emerged as significant digital assets, representing unique digital arts and collectibles.\footnote{Notable examples include Beeple's \emph{``Everydays,''} sold for $\$69.3M$~\cite{beeple2021}, and an \emph{NBA Top Shot} of \emph{``LeBron James Highlight,''} for $\$208K$~\cite{nbatopshot}. \isl{NFTs have also seen widespread commercial adoption.}{Beyond individual successes, NFTs have also been exploited commercially. For instance,} \emph{NBA Top Shot}, with total sales exceeding $\$1B$~\cite{topshot1b}, inspired NFT initiatives in other sports leagues~\cite{nflallday, ufcstrike, nhlbreakaway} and \isl{brands}{the sportswear market}, e.g., Nike's acquisition of the NFT startup RTFKT~\cite{nike2021acquiresrtfkt} \inlong{(which led to \emph{Nike CryptoKicks}~\cite{nike2022rtfkt})} and Adidas' launches of NFT ventures~\isl{\cite{adidasalts}.}{\cite{theverge2021adidasnft, adidasalts}. Moreover,} Starbucks \emph{Odyssey}~\cite{starbucks2022odyssey} and Disney \emph{Pinnacle}~\cite{yahoo2023disneydapperlabs} further signify interest in NFTs from other market sectors.} \emph{NFT projects}, consisting of limited numbers of NFTs, are distributed on online NFT marketplaces such as OpenSea~\cite{opensea}\inlong{ and Binance NFT~\cite{binancenft}}. Unlike commodity products widely considered in previous recommendations~\cite{he2020lightgcn, yang2021consisrec}, a key difference in NFTs is \textit{breeding}~\cite{wu2023critical, sawhney2023nike}, where new NFTs can be generated from existing ones, adding a layer of dynamic value creation and user engagement. For example, Nike's CryptoKicks leverages \inlong{the non-fungible property to combat counterfeits~\cite{mukhopadhyay2020curious} and }the breeding mechanisms~\cite{sawhney2023nike} for users to mash-up digital shoe designs to create offspring \textit{CollaboKick}~\isl{\cite{nftnyc2020nike}}{\cite{nftnyc2020nike, andon2019system}}.\footnote{Beyond collectibles and branding, NFTs are also being used to support real-world asset (RWA) tokenization~\cite{notheisen2017trading} and security token offerings (STOs)~\cite{kreppmeier2023real}, enabling fractional ownership, liquidity, and verifiable provenance for physical and financial assets.}
+
+    The success of NFT marketplaces hinges on effectively supporting both sellers in pricing their unique creations and buyers in discovering desirable NFTs that align with their preferences and budgets. However, NFTs possess unique characteristics that render conventional recommendation and pricing techniques inadequate. First, NFT transactions are transparently recorded on blockchains,\inlong{~allowing public access to historical pricing and ownership data,} unlike prior environments\inlong{~\cite{liu2015modeling, yang2021multi}} which often rely on opaque or proprietary data~\cite{kraussl2024non}. In addition, NFTs are\inlong{~inherently} non-fungible~\cite{das2022understanding} and derive value from complex trait systems~\isl{\cite{mekacher2022heterogeneous}}{\cite{pham2023scoring, mekacher2022heterogeneous, naik2024analysing}} (e.g., the ``Gold Stud'' \textit{earring} in Fig.~\ref{fig:bayc-example}), which makes them more difficult to evaluate\inlong{~using traditional pricing models}. Moreover, the ability to breed NFTs (e.g., the new child NFTs indicated by arrows in Fig.~\ref{fig:breeding-example}) introduces dynamic interdependencies between purchased assets, a factor not explored in traditional recommendations~\cite{he2020lightgcn, yang2021consisrec, chang2020bundle, cao2018attentive}. \inlong{These aspects necessitate new approaches for both optimal pricing by sellers and informed purchasing by buyers.}
+
+\inshort{
+\begin{figure}
+    \centering    
+    \includegraphics[width=\linewidth]{imgs/bayc-opensea-flat-enlarge2.jpg}
+    \vspace{-7mm}
+    \caption{
+    \textit{BAYC} NFT $\#4378$ with trait rarity displayed on OpenSea~\cite{opensea}.}
+    \vspace{-4mm}
+    \label{fig:bayc-example}
+\end{figure}
+}
+
+\inlong{
+\begin{figure}
+    \centering    
+    \includegraphics[width=\linewidth]{imgs/bayc-opensea5.jpg}
+    \caption{
+    \textit{Bored Ape Yacht Club} NFT $\#4378$~\cite{bayc4378} and the trait descriptions of the procedurally generated digital art on the OpenSea platform~\cite{opensea}. The descriptions detail the NFT's attributes and their percentages, indicating the rarity of each attribute within the \textit{Bored Ape Yacht Club} collection.}
+    \label{fig:bayc-example}    
+\end{figure}
+
+}
+
+\begin{figure}[t]
+    \centering
+    \begin{minipage}[b]{0.37\linewidth}
+        \centering
+        \subfloat[Homogeneous\label{subfig:homogeneous-breeding}]{%
+            \vspace{2.7mm}%
+            \includegraphics[width=\linewidth]{imgs/homogeneous-example-tiny2.jpg}%
+        }
+        \\[2pt] 
+        \subfloat[Child-project\label{subfig:child-project-breeding}]{%
+            \includegraphics[width=.85\linewidth]{imgs/child-project-example-tiny2.jpg}%
+        }
+    \end{minipage}%
+    % \hfill
+    \begin{minipage}[b]{0.62\linewidth}
+        \centering
+        \subfloat[Heterogeneous Breeding.\label{subfig:heterogeneous-breeding}]{%
+            \includegraphics[width=\linewidth]{imgs/heterogeneous-example2.jpg}%
+        }
+    \end{minipage}
+    \caption{Examples of NFT project breeding~\cite{heterosis, fatape, pann}\inshort{ (Section~\ref{sec:the-problem})}.}
+    \inshort{\vspace{-4mm}}
+    \label{fig:breeding-example}
+\end{figure}
+
+% ######
+% ######
+% ######
+
+\begin{figure*}
+  \centering
+  \inshort{\includegraphics[width=\linewidth]{imgs/problem-tiny.jpg}
+  \vspace{-6mm}}
+  \inlong{\includegraphics[width=\linewidth]{imgs/problem.jpg}}
+  \caption{Illustration of the \problemfull (\problem) problem. \inlong{The \problem problem involves optimizing prices for maximum seller revenue and optimizing NFT purchasing and breeding for maximum buyer utility for NFT projects comprising a \emph{trait system} and a \emph{breeding mechanism}.}}
+  \inshort{\vspace{-4mm}}
+  \label{fig:problem-illustration}
+\end{figure*}
+
+
+In this paper, we formulate the \textit{\problem (\problemfull)} problem. Our approach is to model \problem as an economic game, simulating seller and buyer actions within the NFT marketplace with an aim to optimize seller revenue while simultaneously maximizing each buyer's utility of recommended NFTs. In \problem, the buyers' utility encompasses three key components: (i) the value of owning individual rare NFTs, (ii) the satisfaction derived from forming a personal collection, and (iii) the additional benefits of breeding, according to buyer preferences, budgets, and trait rarity. Thus, \problem is challenging due to \isl{numerous}{vast number of} distinct traits and attributes, fixed supply impacting pricing\inlong{ strategy}, and complex demand estimation due to breeding. Addressing \problem also poses significant data mining challenges, including modeling complex NFT attributes and generative relationships, and scaling algorithms for efficient recommendations. We prove that \problem is computationally hard (PPAD-complete in Theorem~\ref{thm:ppad}).
+    
+\inshort{To solve \problem problem, we design \method, namely, \methoduline.}\inlong{To solve \emph{\problem}, it is crucial to strike a balance between the objectives of purchasing and pricing recommendations. A focus solely on maximizing \textit{seller revenue} may lead to buyer dissatisfaction, while prioritizing \textit{buyer utility} could result in suboptimal revenue for the seller. These tangled considerations necessitate finding a balanced state that satisfies both parties. In other words, we need to identify an \textit{competitive equilibrium} between the seller and the buyers, corresponding to pricing and purchasing recommendations that simultaneously yield optimal \textit{revenue} for the seller and optimal \textit{utility} for buyers~\cite{pang2005quasi, cheung2013tatonnement}. Specifically, Competitive equilibrium is achieved when the revenue-maximizing sellers and the utility-maximizing buyers are all satisfied (see Definition~\ref{def:competitive_equilibrium})~\cite{nicholson2012microeconomic}. Equipped with the above observations, we design \method, namely, \methoduline.} 
+    \method leverages a dual-update iterative scheme consisting of \findprice and \finddemand to achieve the \textit{competitive equilibrium} between the seller and the buyers, i.e., the optimal strategy for both the seller and the buyers, respectively (Proposition~\ref{prop:equilibrium}). \finddemand recommends purchases to optimize buyers' utilities based on pricing derived by \findprice, which then updates the prices based on aggregate demand of all buyers from previous \finddemand recommendations. Crucially, Theorem~\ref{thm:convergence} establishes \method's convergence to the competitive equilibrium, which signifies maximized buyer utilities alongside market-clearing prices that optimize seller revenue.
+
+    Central to the complexity of \problem are the diverse breeding mechanisms supported by popular NFT platforms~\cite{opensea}, which enable the creation of new NFTs and significantly impact buyer utility and market dynamics. Understanding these mechanisms is crucial for effective recommendation. This paper considers three primary types of breeding:
+    \inshort{\textbf{Homogeneous Breeding}, which produces offspring by recombining attributes from a pair of parent NFTs (e.g., the new flower in Fig.~\ref{fig:breeding-example}(\subref{subfig:homogeneous-breeding}) blending parent attributes); \textbf{Child-project Breeding}, which introduces \textit{mutation} and unique child designs (.i.e. the ``gold mask'' on the child ape is mutated in Fig.~\ref{fig:breeding-example}(\subref{subfig:child-project-breeding}); and \textbf{Heterogeneous Breeding}, which forms custom composites from multiple parent NFTs across distinct trait divisions, catering to different collector types (i.e., \textit{niche} and \textit{eclectic}).\footnote{We consider \textit{niche} and \textit{eclectic} collectors who prefer consistency and diversity, respectively; the blue and red boxes in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}) illustrate corresponding selections of uniform and varied attribute classes.}}\inlong{\textbf{1) \homob} (e.g., \textit{Axies Infinity}~\cite{axieinfinity} and \textit{Heterosis}~\cite{heterosis} in Fig.~\ref{fig:breeding-example}(\subref{subfig:homogeneous-breeding})), which generates child NFTs from a pair of parent NFTs, is the most common type. However, it risks market saturation by inheriting the same attribute designs~\cite{cryptobanter2022breedinggames} with a \textit{population factor} to value child NFTs with rare attributes. \textbf{2) \childb} (e.g., \textit{Fat Ape Club}~\cite{fatape} and \textit{Roaring Leader}~\cite{roaringleader}) creates unique child NFT designs and mitigates market saturation through random mutations to improve novelty~\cite{cryptokittiesmutations} (e.g., the ``gold shade glasses'' on the child NFT in Fig.~\ref{fig:breeding-example}(\subref{subfig:child-project-breeding})). \textbf{3) \heterb} (e.g., \textit{Trait Swap}~\cite{traitswap2023} and \textit{First Supper}~\cite{danky2020firstsupper}) creates customized composite artworks appealing to buyers with specific artistic objectives. It selects one NFT from each \emph{trait division} (e.g., the horizontal categories in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}) that delineate different types of images), where buyers may select an \textit{attribute class} (e.g., the vertical categories in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}) for each trait division to determine the design styles of the instances). This feature facilitates customized NFT breeding for two distinct buyer types based on their design preferences~\cite{zhang2021group}: \textbf{i) niche collectors}~\cite{mugge2012product}, who seek consistency, can select NFTs with a uniform attribute class across trait divisions (\eg, blue box selections in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding})); \textbf{ii) eclectic collectors}~\cite{lefkoff1993characteristic}, who prefer diversity, can choose from different attribute classes (\eg, red box selections in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding})).}
+    These mechanisms are formally defined in Section~\ref{subsec:expected-value-breeding}.
+    
+    To efficiently address the combinatorial challenge inherited from breeding in \finddemand, we design the \emph{\homosfull (\homos)} and \emph{\hetersfull (\heters)}. Specifically, \emph{\homos} identifies optimal parent pairs for breeding by evaluating the \textit{amalgamated valuations} (i.e., NFT's personalized value) of buyer preferences and instance rarity, while \emph{\heters} further curates NFT parent sets by prioritizing the parents with consistent and diverse attribute classes, preferred by niche and eclectic collectors, respectively. \homos and \heters improve \method's scalability by significantly reducing computational complexity (Theorem~\ref{thm:time-complexity}), while restricting a bounded approximation error for breeding utility (Proposition~\ref{prop:pruning_approx}), maintaining optimal breeding utility for buyers without exhaustive search.
+    
+    The contributions in this work are as follows.
+    \begin{itemize}
+        \item 
+        We formulate the \problemfull (\problem) problem for NFTs with traits and breeding that are not explored in traditional commodity recommendations.
+        \item 
+        We propose \method for \problem to derive optimal pricing and purchasing recommendations. To address the combinatorial challenge due to breeding, we propose \emph{\homosfull (\homos)} and \emph{\hetersfull (\heters)} with guaranteed error bounds.
+        \item 
+        Theoretical analyses prove the hardness of \problem and the convergence of \method to a competitive equilibrium.
+        \item 
+        Extensive experiments on five real-world NFT projects show that \method consistently surpasses all baseline methods in revenue and average utility (with smaller runtime) across all scenarios. 
+    \end{itemize}
+    
+
+        % CryptoKicks smart contract functionality the enables both physical item redemption~\cite{vendrell2022rtfkt} and the unprecedented NFT
+    \begin{comment}
+    As project creators (sellers) and buyers are the main contributors to the prosperity of marketplaces, it is beneficial for them to support the sellers in project launch, i.e., decide the NFT pricing, while providing buyers with recommendations for informed purchases~\cite{costa2023unraveling}.\footnote{In the context of this work, a project creator is referred to as a seller. We use these two terms interchangeably throughout the paper.} Ultimately, optimizing seller revenue and enhancing buyer satisfaction increase the marketplace's commission-based earnings~\cite{zou2024ownership}. Thus, \ul{pricing recommendations for sellers and purchasing recommendations for buyers} are crucial for NFT marketplaces.
+
+    Conventional recommendation techniques  are ill-suited for NFT marketplaces primarily because they do not account for NFTs' non-fungibility, fixed supply, complex trait interactions, and particularly, generative breeding mechanisms~\cite{zhang2019deep}. At their core, NFTs are non-interchangeable (\ie, non-fungible), ensured by blockchain verification~\cite{das2022understanding}. Typically, an NFT project offers only a limited (fixed) number of NFTs in its product launch~\cite{ante2023non}, in contrast to conventional goods that are interchangeable and are continuously manufactured to meet ongoing demand~\cite{kong2021alternative}. Thus, new services are much needed to make proper pricing recommendations for NFT project creators to optimize their revenue in this fixed-supply market. On the other hand, for buyers, various factors, e.g., budget and preferences, need to be considered in NFT purchases. It's worth noting that NFT projects employ \textbf{trait systems}~\cite{pham2023scoring, mekacher2022heterogeneous, naik2024analysing} (Fig.~\ref{fig:bayc-example}) to create unique \textit{NFT instances} through attribute combinations. Moreover, the \textbf{breeding mechanisms} of NFT projects~\cite{wu2023critical, axieinfinity, cryptokitties, fatape, roaringleader, traitswap2023, danky2020firstsupper} (Fig.~\ref{fig:breeding-example}) allow the owners to create new NFTs with existing ones they possess (detailed in Section~\ref{sec:the-problem}). This complication necessitates buyers to handle numerous options and assess compatibility for breeding purposes. Thus, advanced purchasing recommendation is needed to assist buyers in navigating the complex NFT traits and breeding. 
+
+    NFT marketplaces can address these needs by providing recommendations and support for both sellers and buyers. For sellers, marketplaces can collect data on buyer budgets and preferences through surveys or mining techniques (e.g., topic modeling~\cite{liu2015modeling}) to estimate potential demands to suggest NFT pricing for a project. For buyers, marketplaces can recommend optimal NFT selections based on utility modeled by incorporating preferences, budgets, and breeding mechanisms. However, these two recommendations are tangled with each other. Varied purchasing recommendations affect demands for each NFT, necessitating pricing adjustments, while NFT pricing influences buyer utility and purchasing recommendations. Previous research often overlooks this interplay, leading to suboptimal outcomes such as inaccurate seller pricing that fails to capture true market demand, or buyer recommendations that do not maximize utility given breeding possibilities and budget constraints. To address this issue, we propose the \emph{\problemfull (\problem)} problem, which aims to jointly 1) assist sellers in maximizing revenue through optimal pricing and 2) help buyers maximize utility via purchasing and breeding strategies. 
+    
+    In this novel \problem problem, an NFT marketplace provides recommendations for both seller pricing and buyer purchasing to facilitate market growth. As shown in Fig.~\ref{fig:problem-illustration}, \problem is novel and challenging because NFT projects face unique issues. For buyers, in addition to preferences and budgets, the vast number of distinct NFT instances (generated via the \textit{trait system}) and the \textit{breeding combinations} make optimal purchasing difficult to attain. For the seller, the fixed supply of NFTs makes the pricing strategy critical to revenue generation. Furthermore, breeding mechanisms, which encourage joint purchases for creating new NFTs, complicate demand estimation in pricing due to their inherent interconnectedness.\footnote{Notice that since NFTs are valuable digital assets with provable ownership on the blockchain, a fixed supply can still generate tremendous wealth for the seller~\cite{businesstoday2023boredape}.} Thus, sellers face pricing challenges due to fixed supply, while buyers struggle with complex purchasing decisions. Since pricing and purchasing are interdependent, NFT marketplaces must offer joint recommendations for both. Based on our theoretical analyses, the complexity of \problem is proved to be PPAD-complete, associated with the difficulty of computing Nash equilibria in Game Theory~\cite{daskalakis2009complexity}.
+    
+    \problem model the buyers' utility from NFTs in three aspects, i) the value of owning individual rare NFTs~\cite{mekacher2022heterogeneous}; ii) the pleasure of forming a collection of them~\cite{he2022development, li2023motivates}; and iii) the extra benefit coming from NFT breeding~\cite{ho2022analysis, serada2021cryptokitties}. \n{Central to the complexity of \problem are the diverse breeding mechanisms supported by popular NFT platforms, which allow for the creation of new NFTs and significantly influence both buyer utility and market dynamics. Understanding these mechanisms is crucial for effective recommendation. We consider three primary types} of breeding mechanisms supported in popular NFT platforms~\cite{opensea, binancenft}. \textbf{1) \homob} (e.g., \textit{Axies Infinity}~\cite{axieinfinity} and \textit{Heterosis}~\cite{heterosis} in Fig.~\ref{fig:breeding-example}(\subref{subfig:homogeneous-breeding})), which generates child NFTs from a pair of parent NFTs, is the most common type. However, it risks market saturation by inheriting the same attribute designs~\cite{cryptobanter2022breedinggames} with a \textit{population factor} to value child NFTs with rare attributes. \textbf{2) \childb} (e.g., \textit{Fat Ape Club}~\cite{fatape} and \textit{Roaring Leader}~\cite{roaringleader}) creates unique child NFT designs and mitigates market saturation through random mutations\bin{ from parents} to improve novelty~\cite{cryptokittiesmutations} (e.g., the ``gold shade glasses'' on the child NFT in Fig.~\ref{fig:breeding-example}(\subref{subfig:child-project-breeding})). \textbf{3) \heterb} (e.g., \textit{Trait Swap}~\cite{traitswap2023} and \textit{First Supper}~\cite{danky2020firstsupper}) creates customized composite artworks appealing to buyers with specific artistic objectives. It selects one NFT from each \emph{trait division} (e.g., the horizontal categories in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}) that delineate different types of images), where buyers may select an \textit{attribute class} (e.g., the vertical categories in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}) for each trait division to determine the design styles of the instances). This feature facilitates customized NFT breeding for two distinct buyer types based on their design preferences~\cite{zhang2021group}: \textbf{i) niche collectors}~\cite{mugge2012product}, who seek consistency, can select NFTs with a uniform attribute class across trait divisions (\eg, blue box selections in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding})); \textbf{ii) eclectic collectors}~\cite{lefkoff1993characteristic}, who prefer diversity, can choose from different attribute classes (\eg, red box selections in Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding})). 
+\end{comment}
+\section{Related Works}
+\inshort{This section reviews related works in pricing and purchasing recommendations, where key properties in NFTs are not considered. For a background on blockchain and discussions on other types of recommendations, please refer to~\cite{supplementary}.}
+
+\inlong{
+\noindent\textbf{Blockchain and NFTs.} Recent works in blockchain technology have catalyzed various innovations, ranging from security enhancement~\cite{fang2022seframe}, smart contracts~\cite{fang2021high, zhang2021authenticated}, to authentication~\cite{wang2022vchain}, paving the way for diverse applications. Among them, NFTs have garnered significant attention across research fields including finance~\cite{bao2022non, kraussl2024non} and cryptography~\cite{das2022understanding, vasan2022quantifying} due to their potential to revolutionize digital asset markets~\cite{nadini2021mapping, wang2021non}. In finance, scholars examine NFTs' impact on fintech~\cite{bao2021recent, renduchintala2022survey, foglia2024fintech} and marketing~\cite{chohan2023nft, sung2023nft, alkhudary2023understanding}. Additionally, NFTs' influence on property rights and business models is discussed across domains such as art~\cite{senkardes2021blockchain, popescu2021non, kuehn2024new}, sports~\cite{baker2022non, glebova2023new}, and entertainment~\cite{vidal2022new}. Research also explores correlations of NFTs' high valuations with other assets~\cite{dowling2022non, dowling2022fertile, wang2022volatility, ko2022economic, ghosh2023prediction, gunay2023frequency}. However, these studies do not consider the competitive equilibrium between sellers and buyers and also neglect the impact of breeding on buyers' utility. Another branch of NFT research focuses on security issues such as transparency~\cite{bhujel2022survey}, market manipulation~\cite{von2022nft}, and NFT ownership validation~\cite{wang2023nfts, mochram2022systematic, stoger2023demystifying, gao2023can}. More relevant to our work are studies on NFT valuation based on internal traits or visual designs~\cite{costa2023show, mekacher2022heterogeneous} and external social media influences~\cite{kapoor2022tweetboost, casale2022impact, sawhney2022tweet}. While insightful, they neglect the buyer demand and breeding mechanism, which are addressed in our approach. Some works address NFT recommendation~\cite{piyadigama2022analysis, edi2023recommendation, aydougdu2023recommender, kim2023nfts, choi2024recommender}. However, they focus on buyer preferences based on NFT attributes but ignore breeding. Besides, they also neglect the buyers' budget constraints and the equilibrium between seller pricing and buyers' purchasing decisions, which are crucial for simultaneously optimizing both the seller revenue and the buyers' utilities.
+
+\noindent\textbf{Pricing and Purchasing Recommendation.}} 
+
+Existing research on pricing explores real-time bidding~\cite{ren2019deep, yang2021multi}, vehicle dispatch services~\cite{zheng2019auction, zhang2022multi},\inlong{~\cite{tong2021combinatorial},} and seasonal pricing strategies~\cite{zhu2022modeling}. However, these models are not designed for NFTs, which present unique challenges due to their \textit{finite supply}. Similarly, prevalent purchasing recommendation systems primarily emphasize user preferences~\inlong{\cite{zhu2014mining, liu2017deepstyle},~}\cite{chen2019personalized} and item attributes \cite{zhang2019deep}, usually overlooking \textit{pricing} and the additional utility of breeding new NFTs\inlong{ from existing NFTs} at the same time. Such approaches typically employ user-item rating matrices~\cite{koren2009matrix, he2020lightgcn} sometimes enhanced by social network influence~\cite{zhou2017enhancing, zhou2019real, yang2021consisrec}, \inlong{while some state-of-the-art methods leverage}\inshort{leveraging} deep learning models~\cite{he2020lightgcn, yang2021consisrec}. 
+
+Other studies address recommendation scenarios for item bundles~\cite{zhu2014bundle, chang2020bundle} and buyer groups~\inlong{\cite{carvalho2013users, zhao2016group},~}\cite{cao2018attentive, zhang2017item, xiao2017fairness} in group recommendations. However, all the above works neglect the \textit{competitive equilibrium} between sellers and buyers for the interconnectedness of NFT instances due to the \emph{trait system} and the \emph{breeding mechanism}, which creates new NFTs from parent NFTs not considered in traditional commodity recommendations~\cite{he2020lightgcn, yang2021consisrec, chang2020bundle, cao2018attentive}. 
+
+Classical recommendation methods fall short because they (1) ignore the critical role of breeding, and (2) treat pricing~\inlong{\cite{wu2018deep},~}\cite{zhang2022multi, zhu2022modeling} and purchasing~\cite{he2020lightgcn, yang2021consisrec} as separate tasks. As such, they cannot support the joint pricing and purchasing recommendations central to \problem. To our knowledge, no prior work finds competitive equilibrium to jointly optimize seller revenue and buyer utility in NFT markets. Although some studies consider social consensus~\cite{zhang2017item, xiao2017fairness} or item bundling~\cite{chang2020bundle}, none fully capture the unique characteristics of NFTs—such as trait systems and breeding—and their substantial impact on buyer utility (see Section~\ref{subsec:buyer-utility}).
+
+\inlong{\noindent\textbf{Special topics in recommendation.}
+We discuss the relation of this work with other special topics in recommendations, none of which address NFT-specific challenges like breeding mechanics and trait systems. First, \textbf{fairness in recommendation} aims to prevent biased recommendations for protected groups (C-fairness)~\cite{ge2021towards} or bias on how often sellers are recommended (P-fairness)~\cite{singh2018fairness}. However, they treat the two fairnesses independently~\cite{burke2018balanced}, even for joint CP-fairness works~\cite{suhr2019two}. In contrast, we model direct buyer-seller interactions where purchasing influences pricing and vice versa. \textbf{Multi-objective recommendation} focuses on Pareto-Efficient trade-offs between goals~\cite{ge2022toward, lin2019pareto} but do not consider equilibrium between the seller and buyers. Similar to our work, \textbf{value-aware recommendation}~\cite{zheng2020price, pei2019value, zhang2022price} considers economic costs. However, these works only incorporate fixed pricing as a static factor in user preference, without addressing dynamic pricing based on buyer demands or considering hard budget constraints. Lastly, the \textbf{reciprocal recommendation} is markedly different from our work, involving matches between two symmetrical parties (e.g., online dating~\cite{xia2015reciprocal}). In contrast, our setting is asymmetrical, i.e., buyers select NFTs, but (the seller of) NFTs do not select buyers; the seller sets the prices of NFTs.}
+
+
+
+
+
+\inshort{\begin{table}
+    \caption{Summary of Notations (full table in~\cite{supplementary}).}
+    \label{tab:notationfull}
+    \centering
+    \begin{tabular}{c|p{.7\linewidth}}
+    \toprule
+    \textbf{Notations} & \textbf{Descriptions} \\
+    \midrule
+    $\mathcal{N}$ & The set of $N$ NFT buyers, denoted as $b_1, \ldots, b_N$.\\
+    $\mathbf{a}^i$ & Trait affinity tensor of buyer $b_i$, consisting of $T$ affinity vectors, $\mathbf{a}^i = (\mathbf{a}^i_1, \ldots, \mathbf{a}^i_T)$.\\
+    $\mathcal{M}$ & The set of $M$ NFT instances $\eta_1, \ldots, \eta_M$.\\
+    $\bm{\alpha}^j$ & Attribute tensor of NFT instance $\eta_j$, consisting of $T$ one-hot vectors, $\bm{\alpha}^j = (\bm{\alpha}^j_1, \ldots, \bm{\alpha}^j_T)$.\\
+    $B^i, U^i, R^i$ & Budget, utility, and remaining budget of $b_i$.\\
+    $\mathcal{A}_t$ & The attribute set for each trait $t\in[1,\ldots,T]$.\\
+    $\mathbf{Q}$ &  The supply vector. $\mathbf{Q}_j$ records the number of copies of NFT assets per NFT instance $\eta_j$.\\
+    $\mathbf{p}$ & The recommended pricing ($\mathbf{p}_j$ is price of $\eta_j$).\\
+    $\mathbf{x}^i$ & The recommended purchases for buyer $b_i$. $\mathbf{x}^i_j$ indicates the amount of $\eta_j$ recommended to $b_i$.\\
+    $\mathcal{P}, \mathcal{L}, \mathcal{C}$ & A parent NFT set, pruned list of parent NFTs, and the candidate set of parent NFT sets.\\
+    $V(\eta_j)$ & The objective valuation of $\eta_j$.\\
+    $\Tilde{V}^i(\eta_j)$ & The amalgamated valuation of $\eta_j$ for buyer $b_i$.\\
+    $q(\bm{\alpha}^j_t)$ & The number of NFTs possessing attribute $\bm{\alpha}^j_t$. \\
+    $k$ & The breeding count restriction.\\
+    $\mathcal{K}$ & The subset of that yields the top-$k$ breeding results.\\
+    $r$ & The random mutation rate.\\
+    $r_{breed}^i$ & The \breedrate for buyer $i$.\\
+    $f_{pop}$ & The population factor due to market saturation. \\
+    % $q_c(\bm{\alpha}^c_t)$ & The number child NFTs that possess the attribute $\bm{\alpha}^c_t$ among all child NFTs created by all buyers in \homob.\\
+    % $\mathbb{M}(\mathcal{P})$ & The mode count that finds the attribute class with the largest number of NFT instances in the parent set $\mathcal{P}$ and returns the count of NFT instances belonging to that class.\\
+    % $\mathbb{U}(\mathbf{P})$ & The unique count that counts the number of unique attribute classes among $\eta\in\mathcal{P}$.\\
+    $\mathbf{z}$ & The excess demand.\\
+    % , \ie, the difference between the aggregate purchase recommendations and the supply.\\
+    % $\beta^i$ & The normalized budget $B^i/\sum_i B^i$ of buyer $b_i$.\\
+    % $\phi$ & A convex potential for the \problem problem.\\
+    % $U$ & The aggregated utility $U=\prod_i U^i(\mathbf{x}^i)^{\beta^i}$.\\
+    \bottomrule
+    \end{tabular}
+\end{table} 
+}
+\inlong{\begin{table}
+    \caption{Summary of Notations.}
+    \label{tab:notationfull}
+    \centering
+    \begin{tabular}{c|p{.7\linewidth}}
+    \toprule
+    \textbf{Notations} & \textbf{Descriptions} \\
+    \midrule
+    $\mathcal{N}$ & The set of $N$ NFT buyers, denoted as $b_1, \ldots, b_N$.\\
+    $\mathbf{a}^i$ & Trait affinity tensor of buyer $b_i$, consisting of $T$ affinity vectors, $\mathbf{a}^i = (\mathbf{a}^i_1, \ldots, \mathbf{a}^i_T)$.\\
+    $\mathcal{M}$ & The set of $M$ NFT instances $\eta_1, \ldots, \eta_M$.\\
+    $\bm{\alpha}^j$ & Attribute tensor of NFT instance $\eta_j$, consisting of $T$ one-hot vectors, $\bm{\alpha}^j = (\bm{\alpha}^j_1, \ldots, \bm{\alpha}^j_T)$.\\
+    $B^i, U^i, R^i$ & Budget, utility, and remaining budget of $b_i$.\\
+    $\mathcal{A}_t$ & The attribute set for each trait $t\in[1,\ldots,T]$.\\
+    $\mathbf{Q}$ &  The supply vector. $\mathbf{Q}_j$ records the number of copies of NFT assets per NFT instance $\eta_j$.\\
+    $\mathbf{p}$ & The recommended pricing ($\mathbf{p}_j$ is price of $\eta_j$).\\
+    $\mathbf{x}^i$ & The recommended purchases for buyer $b_i$. $\mathbf{x}^i_j$ indicates the amount of $\eta_j$ recommended to $b_i$.\\
+    $\mathcal{P}, \mathcal{L}, \mathcal{C}$ & A parent NFT set, pruned list of parent NFTs, and the candidate set of parent NFT sets.\\
+    $V(\eta_j)$ & The objective valuation of $\eta_j$.\\
+    $\Tilde{V}^i(\eta_j)$ & The amalgamated valuation of $\eta_j$ for buyer $b_i$.\\
+    $q(\bm{\alpha}^j_t)$ & The number of NFTs possessing attribute $\bm{\alpha}^j_t$. \\
+    $k$ & The breeding count restriction.\\
+    $\mathcal{K}$ & The subset of all parent NFT sets that yields the top-$k$ breeding results.\\
+    $r$ & The random mutation rate.\\
+    $r_{breed}^i$ & The \breedrate for buyer $i$.\\
+    $f_{pop}$ & The population factor due to market saturation. \\
+    $q_c(\bm{\alpha}^c_t)$ & The number child NFTs that possess the attribute $\bm{\alpha}^c_t$ among all child NFTs created by all buyers in \homob.\\
+    $\mathbb{M}(\mathcal{P})$ & The mode count that finds the attribute class with the largest number of NFT instances in the parent set $\mathcal{P}$ and returns the count of NFT instances belonging to that class.\\
+    $\mathbb{U}(\mathbf{P})$ & The unique count that counts the number of unique attribute classes among $\eta\in\mathcal{P}$.\\
+    $\mathbf{z}$ & The excess demand, \ie, $\sum_i\mathbf{x}^i(\mathbf{p}) - \mathbf{Q}$, the difference between the aggregate buyer purchase recommendations and the supply.\\
+    $\beta^i$ & The normalized budget $B^i/\sum_i B^i$ of buyer $b_i$.\\
+    $\phi$ & A convex potential for the \problem problem.\\
+    $U$ & The aggregated utility $U=\prod_i U^i(\mathbf{x}^i)^{\beta^i}$.\\
+    \bottomrule
+    \end{tabular}
+\end{table} 
+}
+
+\section{The \texorpdfstring{\problem}{NP3R} Problem}
+\label{sec:the-problem}
+    \inshort{\problem includes $N$ buyers and $M$ NFT instances in an NFT project with a \emph{trait system} and a \emph{breeding mechanism}.}\inlong{In the \problem problem, we focus on the scenario of an NFT project launch with $N$ buyers, $M$ NFT instances generated through a \emph{trait system}, and a \emph{breeding mechanism} allowing buyers to create child NFTs from their purchases.}
+    Table~\ref{tab:notationfull} summarizes the notations.
+% Due to space constraints, please see~\cite{supplementary} for the notation table.
+
+\begin{definition}[Trait System]
+\label{def:nft-trait-system}
+A trait system comprises $T$ traits, where each NFT instance $\eta_j$ is defined by an attribute tensor $\bm{\alpha}^j = (\bm{\alpha}^j_1, \ldots, \bm{\alpha}^j_T)$, specifying one attribute per trait. Each instance $\eta_j$ has a supply of $\mathbf{Q}_j$ interchangeable copies, each referred to as an \emph{NFT asset}.
+\end{definition}
+\inlong{For instance, in Fig.~\ref{fig:bayc-example}, NFT \#4378 of the BAYC digital art collection~\cite{freeman2023bayc} comprises attributes ``Gold Stud'' for the ``EARRING'' trait and ``Golden Brown'' for the ``FUR'' trait.}
+
+\begin{definition}[Breeding Mechanism]
+    \label{def:nft-breeding}
+    The NFT breeding mechanism enables the creation of a new child NFT, $\eta_c = \textsc{breed}(\mathcal{P})$, from parent NFTs $\mathcal{P}$, under a breeding count limit of $k$ child NFTs per buyer, which aims to prevent market oversupply in order to retain the NFT value.\footnote{E.g., Axie Infinity~\cite{axieinfinity} limits the number of breedings for each NFT.}
+\end{definition}
+In particular, existing research widely overlooks NFT trait systems~\cite{he2020lightgcn, yang2021consisrec} and breeding~\cite{costa2023show, kapoor2022tweetboost, piyadigama2022analysis}\inlong{,~\cite{kim2023nfts}}, respectively. \problem aims to find the optimal pricing recommendation to the seller and the optimal purchasing recommendation to the buyers simultaneously. \problem can be divided into two subproblems: 1) \emph{\problemb (\probb)}, which recommends NFT purchases to maximize the utilities of buyers according to their budgets and preferences, NFT pricing, and the breeding mechanism; 2) \emph{\problema (\proba)}, which optimizes pricing for maximum seller revenue. \inlong{In the following, w}\inshort{W}e use $\mathbf{x}^i$ to formally represent buyer $b_i$'s purchasing recommendations under the pricing vector $\mathbf{p}$, where $\mathbf{x}^i_j$ ($j$th element of $\mathbf{x}^i$) is the amount of NFT $\eta_j$ recommended to $b_i$ and $\mathbf{p}_j$ ($j$th element of $\mathbf{p}$) is the price of $\eta_j$. 
+
+\begin{definition}[The \probb problem]
+\label{def:problemb}
+    Given a pricing $\mathbf{p}$ and $U^i(\mathbf{x}^i)$, the utility of buyer $b_i$, the \probb problem aims to solve
+    \begin{equation}\small
+        \label{eqn:argmax-buyer-demand}
+        \hat{\mathbf{x}}^i = \argmax_{\mathbf{x}^i}U^i(\mathbf{x}^i),\,\,s.t.\,\,\mathbf{x}^i\cdot\mathbf{p}\leq B^i,
+    \end{equation}
+    where $B^i$ is the budget of buyer $b_i$.
+\end{definition}
+\begin{definition}[The \proba problem]
+\label{def:problema}
+    Given the NFT\xspace\inlong{instance} set $\mathcal{M}$ with supply\xspace\inlong{vector} $\mathbf{Q}$ and the buyer set $\mathcal{N}$, \proba seeks to maximize
+    \begin{equation}\small
+        \hat{\mathbf{p}} = \argmax_\mathbf{p} \sum_{\eta_j\in\mathcal{M}} \mathbf{p}_j \cdot \min\left(\mathbf{Q}_j, \sum_{b_i\in\mathcal{N}}\mathbf{x}^i_j\right)
+    \end{equation}
+    \inshort{according to the solution ${\mathbf{x}^i}$ of \probb, where $\min(\cdot)$ restricts total purchase from exceeding over the supply.}
+    \inlong{according to the purchasing recommendation ${\mathbf{x}^i}$ from solving \probb, where $\min(\cdot)$ restricts total purchase from exceeding over the supply.}
+\end{definition} 
+
+\inlong{
+For instance, consider two NFTs priced at $2$ and $1$, respectively. For a quick idea of \probb, one may consider that a buyer spending his budget on the first NFT yields obtains a half in quantity compared to spending the same amount on the second NFT, yet the buyer's utility is derived based on the NFTs he obtains and his remaining budget (see Definition~\ref{def:buyer-utility} later). Thus, we assume a buyer carefully optimizes his budget allocation. Moreover, for \proba, assuming that most buyers prefer (or derive more utility from) the first NFT over the second one. If the seller sets identical prices, the first NFT is likely sold out quickly, leaving many potential buyers unable to acquire it due to limited supply, while the second NFT may remain unsold, reducing overall revenue. By updating the price to match the demand, the seller can earn more revenue.
+
+\noindent\textbf{Remark.} 
+Traditional products usually assume massive supplies. However, NFT projects inherit combinatorial pairing strategies (for breeding) yet have a fixed supply, making it challenging to find optimal pricing and purchasing. In particular, \problem differs from prior recommendation scenarios in three key ways: 1) the fixed supply of NFTs\inlong{ makes pricing crucial for optimizing revenue}; 2) pricing and purchasing are interdependent, requiring a competitive equilibrium; 3) the breeding mechanism in NFTs which introduces additional complexity (detailed in Section~\ref{subsec:expected-value-breeding}): \inlong{while buyers gain additional utility from breeding new NFTs, they}\inshort{buyers} must optimize parent set combinations under different breeding mechanisms, and the seller must anticipate demand shifts driven by buyers' breeding decisions. These are new challenges absent in existing recommendation frameworks.\\
+\noindent\textbf{Applications.} \problem is formulated for NFT marketplaces (e.g., Opensea~\cite{opensea}, Binance NFT~\cite{binancenft}) to support users of NFT projects. However, by ignoring the breeding utility, \problem also supports traditional scenarios such as travel packages, crowdsourcing, concert ticketing, talent recruitment, umbrella fundraising, etc. For instance, by treating travel destinations as NFTs, where attributes are the activities and supply are the available spots (see Section~\ref{appsubsec:extension-application} for more discussions).
+}
+
+The hardness of \problem is presented as follows.
+
+\begin{theorem}
+\label{thm:ppad} 
+    \inshort{(Proved in~\cite{supplementary})} 
+    The \problem problem for $M$ instances and $N$ buyers with budgets is PPAD-complete.\footnote{PPAD-completeness entails the inherent and extreme computational difficulty associated with resolving equilibria, which makes attaining their efficient resolution challenging in both game-theoretical and economic models~\cite{daskalakis2009complexity}.}
+    \inlong{
+    \begin{proof}
+        We reformulate the \problem problem by considering buyers as active players in a Nash game. In particular, we consider a buyer's spending strategy to \emph{divide} his budget among $M+1$ slots, where one slot is reserved for withholding budget, while the other $M$ slots correspond to budgets dedicated to each of the $M$ instances. Such a scheme satisfies the budget constraint for each buyer. Furthermore, by setting the price of each instance $\eta_j$ to $Q_j/\sum_i a^i_jB^i$, where $a^i_j$ denotes the budget portion committed by buyer $b_i$ to NFT instance $\eta_j$, we can obtain a price vector that also satisfies the supply limit $\mathbf{Q}$ (see Definition~\ref{def:problema}).
+        Since the ratios of $M+1$ slots sum up to $1$, the division scheme corresponds to a mixed strategy profile between the $M+1$ actions, where each value is the probability of taking the corresponding action. Thus, the equilibrium problem can be formulated as a Nash game in which each buyer has $M+1$ actions. Furthermore, the competitive equilibrium corresponds to the Nash equilibrium since each buyer obtains his maximum utility at the market equilibrium and cannot do better by unilaterally changing his budget allocations. By~\cite{daskalakis2009complexity}, the complexity of obtaining the Nash equilibrium is PPAD-complete. Thus, the \problem problem is also PPAD-complete.
+    \end{proof}
+    }
+\end{theorem}
+
+As shown, the joint optimization of \probb and \proba presents significant computational challenges. A buyer's decision space spans $M$ dimensions, corresponding to potential budget allocations across $M$ NFT instances, and the sheer scale and combinatorial complexity of the joint action space for these $N$ buyers are primary drivers of the problem's PPAD-completeness. Therefore, our strategy is to find the competitive equilibrium between buyers and sellers~\cite{devanur2008market} by individually deriving the optimal solutions of \probb and \proba to iteratively update the pricing and the purchasing recommendations.
+
+\subsection{Buyer's Utility}
+
+    \label{subsec:buyer-utility}
+    Following the literature on buyer behaviors~\isl{\cite{li2023motivates}}{\cite{li2023motivates, north2003importance}} and NFT valuation~\cite{costa2023show}, we introduce key components of buyer utility in the NFT market. Beyond the value of money (represented by the \textit{remaining budget} $R^i$)~\cite{che2000optimal}, a buyer $b_i$'s utility comprises 1) \emph{Instance-wise NFT utility} ($U^i_\textit{Instance}$), representing the objective value of individual NFTs, primarily determined by their rarity within the market~\cite{mekacher2022heterogeneous}; 2) \emph{Collection-based NFT utility} ($U^i_\textit{Collection}$), capturing the subjective appreciation derived from owning a set of NFTs, considering the interrelationships and collective attributes of the NFTs in a buyer's portfolio~\cite{li2023motivates}; and 3) \emph{NFT breeding utility} ($U^i_\textit{Breeding}$), accounting for the potential value of child NFTs generated via the breeding mechanism~\isl{\cite{wu2023critical, sawhney2023nike}}{\cite{ho2022analysis, serada2021cryptokitties}}.\footnote{We first formulate the buyer's utility following the linear utility model~\cite{devanur2008market}. Alternative formulations are discussed in \isl{the full version~\cite{supplementary}}{Section~\ref{appsub:alternative}}.} Existing recommendation systems, however, largely overlook such multifaceted NFT utility, particularly the value derived from breeding and collections~\cite{he2020lightgcn, wang2019neural}\inlong{,~\cite{kim2023nfts, choi2024recommender}}.
+    % 
+
+\begin{definition}[Buyer's Utility]    
+    \label{def:buyer-utility}
+    The buyer's utility $U^i$ for $b_i$ is
+    \begin{equation}\small
+        \label{eqn:buyer-utility}
+        U^i(\mathbf{x}^i) \defeq U^i_\textit{Instance}(\mathbf{x}^i) + U^i_\textit{Collection}(\mathbf{x}^i) + U^i_\textit{Breeding}(\mathbf{x}^i) + R^i,
+    \end{equation}
+    where $R^i$ is the remaining budget of buyer $b_i$.
+\end{definition}
+
+\inlong{
+In the following, we model the three components of the buyer utility.
+\paragraph{Instance-wise NFT Utility ($U^i_\textit{Instance}$)} As observed in multiple studies~\inshort{\cite{costa2023show, mekacher2022heterogeneous}}\inlong{\cite{costa2023show, mekacher2022heterogeneous, nourmohammadi2022nft, xiong2023pricing}}, an NFT's value is significantly influenced by the \textit{rarity} of its attributes\inlong{, due to the non-fungible property of NFTs}. This observation is reinforced by the prevalence of rarity statistics for popular NFT projects, which buyers routinely consult to make informed purchasing decisions~\cite{raritysniperbayc, freakstoolstraitstat, kittyhelperraritytable}. To capture this crucial aspect, we formulate the Instance-wise NFT utility $U^i_\textit{Instance}$ as}
+\inshort{\noindent\textbf{Instance-wise NFT Utility ($U^i_\textit{Instance}$).} It captures the objective value of individual NFTs, primarily driven by attribute rarity~\cite{costa2023show},\inlong{~\cite{mekacher2022heterogeneous},} a factor buyers actively consider~\isl{\cite{mekacher2022heterogeneous}}{\cite{raritysniperbayc, freakstoolstraitstat, kittyhelperraritytable}}. Formally,}
+\begin{equation}\small
+    \label{eqn:instance-utility}
+    U^i_\textit{Instance}(\mathbf{x}^i) \defeq \sum_{\eta_j\in\mathcal{M}} \mathbf{x}^i_j V(\eta_j),\,\, V(\eta_j) = \sum_{t=1}^{T}\log\left(\frac{|\mathbf{Q}|}{q(\bm{\alpha}^j_t)}\right),
+\end{equation}
+\inlong{where $V(\eta_j)$ is the \textit{objective valuation} of NFT instance $\eta_j$ taking into account of rarity. Following Mekacher~\etal~\cite{mekacher2022heterogeneous}, we adopt an occurrence frequency-based valuation model, where $q(\bm{\alpha}^j_t)$ denotes the number of NFTs with attribute $\bm{\alpha}^j_t$, and $|\mathbf{Q}|$ is the total number of NFTs. Thus, we can capture the inverse relationship between attribute frequency and NFT value. Note that in the context of NFTs, the non-fungible property introduces a constraint of supply limit $\mathbf{Q}$. In contrast, traditional item recommendations usually do not discuss the case where items are sold out. Specifically, the non-fungible property ensures rarity; without it, NFTs can be duplicated, collapsing their objective value $V$ as the quantity explodes.}
+\inshort{where $V(\eta_j)$ is the objective valuation of NFT $\eta_j$. Following~\cite{mekacher2022heterogeneous}, $q(\bm{\alpha}^j_t)$ is the number of NFTs with attribute $\bm{\alpha}^j_t$, and $|\mathbf{Q}|$ is the total NFT supply. This models the inverse relationship between attribute frequency and value, crucial given NFTs' non-fungible nature and inherent supply limit $\mathbf{Q}$, which ensures rarity.}
+
+
+\inlong{
+\paragraph{Collection-based NFT Utility ($U^i_\textit{Collection}$)}
+Next, based on consumer behavior studies in the NFT market~\cite{hofstetter2024beyond, mereu2023nft, wang2022defining}, we recognize that collectors also derive utility from curating personal NFT portfolios, influenced by individual preferences for specific NFT attributes and the synergy between attributes to form a collection.\footnote{For instance, NFT collectors can display their NFTs in the metaverse~\cite{ooi2023metaverse}, i.e., virtual galleries such as Spatial~\cite{spatial2022what} and Voxels (formerly Cryptovoxels)~\cite{pastor2023cryptovoxels, voxels}.} Indeed, real-world NFT marketplaces support attribute-based searches and offers, allowing collectors to search for the ideal attributes required for their personalized collections~\cite{opensea2023traitoffer, daye2022guide, opensea2022optimizecollection}. To capture these aspects, we formulate the Collection-based NFT utility $U^i_\textit{Collection}$ as}
+\inshort{\noindent\textbf{Collection-based NFT Utility ($U^i_\textit{Collection}$).} Collectors derive utility from curating portfolios based on personal attribute preferences and inter-NFT synergy~\cite{hofstetter2024beyond}\inlong{,~\cite{mereu2023nft, wang2022defining}}, supported by marketplace features~\isl{\cite{opensea}}{\cite{opensea2023traitoffer, daye2022guide, opensea2022optimizecollection}}. Formally,}
+\begin{equation}\small
+    \label{eqn:collection-utility}
+    U^i_\textit{Collection}(\mathbf{x}^i)\defeq \sum_{t=1}^T \mathbf{a}^i_t \cdot\log \left(\sum_{\eta_j\in\mathcal{M}} \mathbf{x}^i_j \bm{\alpha}^j_t + \mathbf{1}\right),
+\end{equation}
+\inlong{where $\mathbf{a}^i_t$ is the \emph{trait affinity tensor} recording buyer $b_i$'s preferences for each trait attribute $t$, and the logarithm is applied element-wise to the vector sum plus the all-one vector $\mathbf{1}$. In other words, $U^i_\textit{Collection}$ models the utility of viewing all NFTs in the buyer's possession as a collection of diverse attributes, where the sum of these attributes experiences diminishing returns~\cite{layard2008marginal} via a logarithmic function and is weighted by the buyer preferences~\cite{hu2013utilizing, hurley2011novelty}.}
+\inshort{where $\mathbf{a}^i_t$ is buyer $b_i$'s trait affinity tensor. $U^i_\textit{Collection}$ thus reflects the utility from the buyer's aggregated NFT attributes, with diminishing returns (via the logarithm) on attribute sums, weighted by individual preferences\inlong{~\cite{hu2013utilizing, hurley2011novelty}}.}
+
+\inlong{
+\paragraph{NFT Breeding Utility ($U^i_\textit{Breeding}$)}
+Finally, we model the NFTs breeding utility, a unique feature that significantly separates NFTs from conventional assets, not considered in existing recommendations~\cite{he2020lightgcn, yang2021consisrec}. According to the idea of fractional NFTs~\cite{fractionalart, leewayhertz2023fractionalnfts}, wherein an NFT is segmented into smaller fractions to make it more accessible to a broader base of potential purchasers, we introduce the \breedrate $r_{breed}^i(\mathcal{P})$, which represents the amount of child NFTs generated by combining the parent set $\mathcal{P}$ with fractional parent NFTs~\cite{rowagames2023mechanics6, perplay2023amajulypart4}. The \breedrate is defined as follows.
+}
+\inshort{\noindent\textbf{NFT Breeding Utility ($U^i_\textit{Breeding}$)} is a unique feature not considered in existing recommendations~\cite{he2020lightgcn, yang2021consisrec}. Drawing from fractional NFT concepts\inlong{~\cite{fractionalart, leewayhertz2023fractionalnfts},}~\cite{rowagames2023mechanics6, perplay2023amajulypart4}, we define the \breedrate $r_{breed}^i(\mathcal{P})$ which represents the amount of child NFTs generated by combining the parent set $\mathcal{P}$ with fractional parent NFTs~\cite{rowagames2023mechanics6, perplay2023amajulypart4} as}
+\begin{equation}\small
+    \label{eqn:breedrate}
+    r_{breed}^i(\mathcal{P})\defeq \frac{1}{|\mathcal{P}|}\sum_{\eta_j\in\mathcal{P}}\min(1, \mathbf{x}^i_j),
+\end{equation}
+\inlong{where the contribution of each parent NFT to \breedrate is proportional to its ownership.\footnote{The fractional holding reaches $1$ when a complete parent set is acquired. We also present discussions on the whole unit sales recommendations in Section~\ref{appsubsec:extension-application}.} By incorporating $r_{breed}^i$ in the breeding utility, buyers are motivated to increase their holdings for ideal NFTs suitable for breeding.}
+\inshort{where each parent NFT's contribution is proportional to its ownership share $\mathbf{x}^i_j$.\footnote{The fractional holding reaches $1$ when a complete parent set is acquired. Please see~\cite{supplementary} for the whole unit sales recommendation.} By incorporating $r_{breed}^i(\mathcal{P})$, buyers are incentivized to increase their purchasing on NFTs for breeding.}
+
+\begin{definition}
+    \label{def:buyer-utility-breeding}
+    The NFT breeding utility is defined as
+    \begin{equation}\small
+    \label{eqn:breeding-utility}
+    U^i_\textit{Breeding} \defeq \max_{\mathcal{K}^i\subset\mathcal{S}} \sum_{\mathcal{P}\in \mathcal{K}^i}
+    r_{breed}^i(\mathcal{P})\mathbb{V}^{i, \textsc{type}}\left[\mathcal{P}\right],
+    \end{equation}
+    where $\mathcal{K}^i$ is a subset of all parent combinations $\mathcal{S}$ whose total \breedrate $\sum_{\mathcal{P}\in \mathcal{K}^i}r_{breed}^i(\mathcal{P})$ is within the breeding count limit $k$ (Definition~\ref{def:nft-breeding}). $\mathbb{V}^{i, \textsc{type}}[\mathcal{P}]$ is buyer $b_i$'s expected value of a child NFT from parent set $\mathcal{P}$ under different breeding types (``homo,'' ``child,'' ``niche,'' ``eclectic''), defined later in Definitions~\ref{def:homogeneous-breeding} to~\ref{def:heterogeneous-breeding}.
+\end{definition}
+\noindent\textbf{Example.} As shown in Fig.~\ref{fig:breeding-example}, different breeding mechanisms yield distinct results. \homob (Fig.~\ref{fig:breeding-example}(\subref{subfig:homogeneous-breeding})) blends parental traits for refined value, while \childb (Fig.~\ref{fig:breeding-example}(\subref{subfig:child-project-breeding})) introduces mutations (e.g., unique glasses) for novelty and rarity. \heterb (Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding})) further create composites from uniform attribute classes (e.g., `Sand') for thematic consistency appealing to \textit{niche} collectors, or from varied classes for \textit{eclectic} collectors. 
+
+\subsection{The Expected Value Functions for Breedings}
+\label{subsec:expected-value-breeding}
+
+To account for market saturation from duplicated NFT attributes in \homob, we adopt the \emph{population factor} $f_{pop}(\eta_c)=\sum_{t=1}^{T}\exp\left(-\frac{q(\bm{\alpha}^c_t)}{|\mathbf{Q}|}\right)$, following~\cite{mekacher2022heterogeneous}. Here, $f_{pop}(\eta_c)$ considers each attribute $\bm{\alpha}^c_t$ of child NFT $\eta_c$, where $q(\bm{\alpha}^c_t)$ is the number of NFTs with $\bm{\alpha}^c_t$, and $|\mathbf{Q}|$ is the total NFT count. Furthermore, we introduce the buyer's amalgamated valuation~\cite{mekacher2022heterogeneous, costa2023show}, $\Tilde{V}^i(\eta) = \left(\sum_t\mathbf{a}^{i}_t \cdot \bm{\alpha}_t \right)V(\eta)$, tailoring the objective valuation of $V(\eta)$ by buyer preferences.\footnote{Amalgamated valuation reflects an NFT's personalized worth to a buyer, adjusting its objective value with a ``personalization factor'' that quantifies that specific buyer's preference for the NFT's attributes.}
+
+\begin{definition}
+    \label{def:homogeneous-breeding}
+    $\mathbb{V}^{i, homo}$ for \homob is
+    \begin{equation}\small
+    \label{eqn:homob-utility}
+     \mathbb{V}^{i, homo}[\mathcal{P}] \defeq \mathbb{E}\left[f_{pop}(\eta_c)\Tilde{V}^i(\eta_c)\right], \eta_c = \textsc{breed}(\mathcal{P}),
+    \end{equation}
+    where $\Tilde{V}^i$ is the amalgamated valuation, and each child attribute $\bm{\alpha}^c_t$ is inherited from parent $p_1$ or $p_2$ (from $\mathcal{P}$) with equal probability.
+\end{definition}
+    
+    \inlong{\noindent\textbf{Example.} In Fig.~\ref{fig:breeding-example}(\subref{subfig:homogeneous-breeding}), the child NFT inherits the red color and the flower shape from each of its parent NFTs\inlong{, respectively}. Considering a parent set $\mathcal{P} = (\eta_1, \eta_2)$, if all attributes are different between $\eta_1$ and $\eta_2$ (i.e., $\alpha^1_t\neq \alpha^2_t,\,\,\forall t$), then the expectation value $\mathbb{V}^{i, homo}(\mathcal{P})$ is calculated over all $2^T$ possible child NFT attributes, weighted by the population factor estimated by the attribute distribution of all buyers' parent NFT selections.\footnote{Random sampling is leveraged for approximate estimations in practice.}}
+
+\begin{definition}
+    \label{def:child-project-breeding} 
+    $\mathbb{V}^{i, child}$ for \childb is
+    \begin{equation}\small 
+         \mathbb{V}^{i, child}[\mathcal{P}] \defeq \mathbb{E}\left[\Tilde{V}^i(\eta_c)\right], \eta_c = \textsc{child-breed}(\mathcal{P}, r),
+    \end{equation} 
+    where $\textsc{child-breed}$ creates $\eta_c$ such that each attribute $\bm{\alpha}^c_t$ is assigned $\bm{\alpha}^{p_1}_t$ or $\bm{\alpha}^{p_2}_t$ (from $\mathcal{P}$) with probability $(1-r)/2$ each;\footnote{Following \textit{CryptoKitties}~\isl{\cite{cryptokitties}}{\cite{cryptokittiesmutations}}, $r$ is predefined by the sellers.} otherwise, $\bm{\alpha}^c_t$ is randomly assigned an attribute from $\mathcal{A}_t$ with mutation probability $r$ for each trait $t$.\footnote{Note that \childb does not include $f_{pop}$ as it addresses market saturation by creating unique child NFT designs and through mutation (with $r$) that can introduce rare attributes not found in parent NFTs.}
+\end{definition}
+
+    \inlong{\noindent\textbf{Example.} In Fig.~\ref{fig:breeding-example}(\subref{subfig:child-project-breeding}), the child NFT inherits ``Tank Top'' and ``Red'' (background) from its parent NFTs, while gaining a ``golden sunglass'' attribute from random mutation of $r$. Considering a parent set $\mathcal{P} = (\eta_1, \eta_2)$, the child NFT resulting from \childb has probability $r$ of obtaining a new attribute not found in $\eta_1$ and $\eta_2$.}
+
+\inshort{Finally, \heterb categorizes NFTs using \emph{trait divisions}, allowing buyers to select one parent NFT from each division, and \emph{attribute classes}, which guide design style choices to cater to distinct collector preferences, i.e., as \textit{niche} and \textit{eclectic} collectors.}
+\inlong{Finally, \heterb incorporates \emph{trait divisions} and \emph{attribute classes} to categorize NFT instances. This structure allows buyers to select one parent NFT from each \emph{trait division}, considering \emph{attribute classes} to guide design style choices, with the distinct preferences of \textit{niche} and \textit{eclectic} collectors requiring separate functions.}
+
+\begin{definition}
+    \label{def:heterogeneous-breeding}
+    In \heterb, the parent NFT set $\mathcal{P}$ consists of NFT instances from each of the $D$ trait divisions, with $|\mathcal{P}| = D$. For niche collectors, the expected value is
+    \begin{equation}\small
+    \label{eqn:v-i-niche}
+        \mathbb{V}^{i, niche}[\mathcal{P}] = \mathbb{M}(\mathcal{P})\sum_{\eta\in \mathcal{P}} \Tilde{V}^i(\eta), 
+    \end{equation}
+    where $\mathbb{M}(\mathcal{P})\defeq \max_c \left|\{\eta \in \mathcal{P} \mid \text{class}(\eta) = c\}\right|$ returns the count of NFTs in the most frequent attribute class $c$ within $\mathcal{P}$, and $\Tilde{V}$ is the amalgamated valuation. For eclectic collectors, 
+    \begin{equation}\small
+    \label{eqn:v-i-eclectic}
+        \mathbb{V}^{i, eclectic}[\mathcal{P}] =  \mathbb{U}(\mathcal{P})\sum_{\eta\in \mathcal{P}}\Tilde{V}^i(\eta),
+    \end{equation}
+    where $\mathbb{U}(\mathcal{P})\defeq \left|\{c \mid \exists \eta \in \mathcal{P}, \text{class}(\eta) = c\}\right|$ counts the distinct attribute classes among $\eta\in\mathcal{P}$.
+\end{definition}
+$\mathbb{M}$ is a \textit{majority count}\inlong{~\cite{benouaret2023probabilistic}} favoring the majority attribute class in $\mathcal{P}$, suiting niche collectors who prefer consistent breeding designs. Conversely, the \textit{diversity count} $\mathbb{U}$ favors attribute class variety in $\mathcal{P}$, supporting eclectic collectors' preference for diverse designs\inlong{~\cite{zhang2010discovery}}. This dual expectation definition under \heterb underscores the need for customized recommendations for specific buyer preferences.
+
+\inlong{\noindent\textbf{Example.} In Fig.~\ref{fig:breeding-example}(\subref{subfig:heterogeneous-breeding}), the example child NFT for niche collectors (blue boxes) is a composite artwork comprising parent NFTs all from the ``Sand'' attribute class, while the example child NFT for eclectic collectors (red boxes) is a composite artwork comprising diverse parent NFTs from all three attribute class. Considering a parent set $\mathcal{P}$ consists of three NFTs from different attribute classes $c_1, c_2, c_3$, the \textit{mode count} $\mathbb{M}(\mathcal{P}) = 1$ is small while the \textit{diversity count} $\mathbb{U}(\mathcal{P}) = 3$, indicating that breeding with a diverse parent set suits eclectic collectors more than niche collectors.}
+
+\section{\method}
+\label{sec:method}
+    {\fussy We present \emph{\method}, \methoduline, an iterative algorithm featuring dual recommendation components: pricing (\findprice) and NFT purchasing with breeding (\finddemand), to address \problem.} \method models \problem as an economic game, simulating seller and buyer actions within the NFT marketplace. \isl{The goal is a competitive equilibrium that achieves optimal buyer utility and seller revenue}{The target outcome is a competitive equilibrium, a state that simultaneously achieves optimal buyer utility and seller revenue}~\isl{\cite{devanur2008market}}{\cite{arrow1954existence}}.
+
+\begin{definition}
+\label{def:competitive_equilibrium}
+    A competitive equilibrium is a strategy profile $(\mathbf{p}^*, {\mathbf{x}^{i*}})$ where i) $\mathbf{p}^*$ is the optimal pricing that solves the \proba problem, and ii) ${\mathbf{x}^{i*}}$ is the optimal purchasing for each buyer $b_i$ that solves the \probb problem, given $\mathbf{p}^*$.
+\end{definition}
+\inlong{\noindent\textbf{Example.} Given a pricing $\mathbf{p}$, each buyer $b_i$ can separately optimize their purchasing strategy $\mathbf{x}^{i*}$ within the budget constraint. However, the pricing may not be optimal for the seller. In particular, the supply may be less than the aggregate demand from the buyers, indicating that some buyers are unable to obtain their desired NFTs and that the seller could have set a higher price to gain more revenue. Conversely, if the price is set too high, buyers may be unwilling to purchase NFTs because the obtained NFTs do not yield NFT-based utilities comparable to simply keeping the budget unspent (i.e., the remaining budget utility $R$).}
+
+\isl{Since pricing and purchasing are interdependent, iterative updates are required to reach equilibrium.}{The interdependence between the seller’s pricing and buyers' purchasing decisions means that changes in one affect the other’s optimal response, making iterative updates necessary for reaching equilibrium.} Crucially, we show that this competitive equilibrium is obtained at the \emph{market-clearing condition}~\cite{raimondo2005market}\inlong{,~\cite{khorasany2018market}}, where \isl{supply matches demand}{total supply matches aggregate demand}, ensuring full allocation without surplus or shortage.
+
+\begin{proposition}
+\label{prop:equilibrium}
+    A market-clearing condition is the joint recommendations $\{\Tilde{\mathbf{p}}$, $\Tilde{\mathbf{x}}\}$ where 
+    \begin{equation}\small
+    \label{eqn:equilibrium-solution}
+        \forall b_i\in \mathcal{N}:\Tilde{\mathbf{x}}^i = \argmax_{\mathbf{x}^i\cdot \Tilde{\mathbf{p}}\leq B^i} U^i(\mathbf{x}^i)\text{ , s.t. } \forall j: \sum_{i=1}^N \Tilde{\mathbf{x}}^i_j = \mathbf{Q}_j,
+    \end{equation}
+    establishes a competitive equilibrium\inshort{~(proof in~\cite{supplementary})}.
+    \inlong{
+     \begin{proof}
+        First, since $\Tilde{\mathbf{x}}^i$ maximizes $b_i$’s utility under the pricing $\Tilde{\mathbf{p}}$, it represents the optimal purchasing decision for the buyer $b_i$. Next, we need to show that $\Tilde{\mathbf{p}}$ maximizes the seller's revenue given the buyers' optimal responses. We prove this by contradiction. Let $\mathbf{p}'$ be a pricing with corresponding buyer recommendations $\mathbf{x}'^{i}$ that is not in market clearing but maximizes seller revenue. Since $\mathbf{p}'$ is not in market clearing, the recommendations deviate from the supply constraint $\sum_i\mathbf{x}'^{i}_j \neq \mathbf{Q}_j$ for some NFT instance $\eta_j$. For an NFT instance $\eta_j$ with $\sum_i\mathbf{x}'^{i}_j > \mathbf{Q}_j$, the price $\mathbf{p}'_j$ is too low and could be raised until a corresponding $\sum_i\mathbf{x}'^{i}_j = \mathbf{Q}_j$. By Definition~\ref{def:problema}, increasing the price strictly improves the revenue, since the quantity term is capped at $\mathbf{Q}_j$. For an NFT instance $\eta_j$ with $\sum_i\mathbf{x}'^{i}_j < \mathbf{Q}_j$, the price $\mathbf{p}'_j$ is too high. Focusing on the logarithmic form of the NFT collection utility and the remaining budget term $R$ in $U^i$ (Equation~(\ref{eqn:buyer-utility})), we find $U^{i}(\mathbf{p}_j) = C\log(\mathbf{x}'^{i}_j+1) + B^i- \mathbf{x}'^{i}_j\mathbf{p}_j$, where $C$ is a scalar constant. Using the optimal condition of $\mathbf{x}'^{i}_j$, $\partial U^{i}/\partial \mathbf{x}'^{i}_j = 0$, we find $C/(\mathbf{x}'^{i}_j+1) - \mathbf{p}_j = 0$. Thus, $\mathbf{x}'^{i}_j = C/\mathbf{p}_j - 1$ and the revenue from $\eta_j$ is $\mathbf{x}'^{i}_j\mathbf{p}_j = C - \mathbf{p}_j$. Thus, revenue increases as prices fall. Considering $U^i_\textit{Instance}$ andn $U^i_\textit{Breeding}$, the solution $\mathbf{x}'^{i}_j$ would become greater than what is derived above, since the additional Instance and Breeding utilities would further compel more purchases from buyers. Thus, the seller can potentially increase their revenue by lowering prices to encourage more purchases, up to the point where the demand meets the supply. Note that lowering the price only increases revenue up to the market clearing point, as further decreasing the price results in $\sum_i\mathbf{x}'^{i}_j > \mathbf{Q}_j$, where the earlier analysis should be applied. Therefore, the market clearing pricing $\Tilde{\mathbf{p}}$ obtains the maximum revenue for the seller.
+    \end{proof}
+    }
+\end{proposition}
+
+\begin{algorithm}[t]
+    \small
+    \caption{The \method method.}
+    \label{alg:method}
+    \textbf{Input:} Buyers' budgets $\{B^i\}$, affinity tensors $\{\mathbf{a}^i\}$, attribute tensors $\{\bm{\alpha}^j\}$ supply vector $\mathbf{Q}$, step-size $\epsilon$, parameters $K_{init}, K, K_d$. Candidate set length $K_c$. \textsc{type}$(i)$ finds the \textsc{type} of different breeding and collector types for $b_i$.
+    \begin{algorithmic}[1]
+    \State $\mathbf{p}\gets \textsc{init}(K_{init}, \{\mathbf{a}^i\}, \{\bm{\alpha}^j\}, \{B^i\}, \mathbf{Q})$
+    \For{$K$ iterations}
+        \For{$i=1$ \textbf{to} $N$}
+            \State $\mathbf{x}^i\gets$\finddemand($K_{d}, \mathbf{a}^i, \{\bm{\alpha}^j\}, B^i, \mathbf{p}, K_c, \textsc{type}(i)$)
+        \EndFor
+        \State $\epsilon, \mathbf{p} \gets$\findprice($\epsilon, \mathbf{p}, \{\mathbf{x}^i\}, \mathbf{Q}$)
+    \EndFor
+    \Procedure{init}{$K_{init}, \{\mathbf{a}^i\}, \{\bm{\alpha}^j\}, \{B^i\}, \mathbf{Q}$}
+        \State random initialize $\mathbf{p}$
+        \For{$K_{init}$ iterations}
+            \State $\forall i, j: \mathbf{s}^i_j \gets \sum_t\mathbf{a}^i_t\bm{\alpha}^j_t/\mathbf{p}_j$
+            % ;
+            \State 
+            $\forall j: \mathbf{p}_j\gets \left(\sum_i B^i\cdot \frac{\mathbf{s}^i_j}{\sum_j \mathbf{s}^i_j}\right)/\mathbf{Q}_j$
+        \EndFor
+        \Return $\mathbf{p}$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+\inlong{
+\begin{algorithm}[t]
+    \small
+    \caption{The \finddemand procedure for a buyer $b_i$.}
+    \label{alg:find-demand}
+    \begin{algorithmic}[1]
+        \Procedure{\finddemand}{$K_{d}, \mathbf{a}^i, \{\bm{\alpha}^j\}, B^i, \mathbf{p}, K_c, \textsc{type}$}
+        \State random init $|\mathbf{s}^i| = 1$, $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$
+        \For {$K_{d}$ iterations}
+            \State $U^i_\textit{Instance}\gets \sum_j \mathbf{x}^i_j\cdot V(\bm{\alpha}^j)$
+            \State $U^i_\textit{Collection}\gets \sum_t \mathbf{a}^i_t \cdot \log \left(\sum_j \mathbf{x}^i_j \bm{\alpha}^j_t + 1\right)$
+            \State $U^i_\textit{Breeding}\gets \textsc{breeding-utility}(\mathbf{x}^i, K_c, \textsc{type})$
+            \State $U^i\gets U^i_\textit{Instance} + U^i_\textit{Collection} +  U^i_\textit{Breeding} + B^i\mathbf{s}^i_{-1}$
+            \inshort{\State $\mathbf{s}^i\gets \left(\mathbf{s}^i + \epsilon_s\frac{\partial U^i}{\partial \mathbf{s}}\right)$; $\mathbf{s}^i \gets \frac{\mathbf{s}^i}{|\mathbf{s}^i|}$; $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$}
+            \inlong{
+            \State $\mathbf{s}^i\gets 
+            \left(\mathbf{s}^i + \epsilon_s\frac{\partial U^i}{\partial \mathbf{s}}\right)$
+            \State $\mathbf{s}^i \gets \frac{\mathbf{s}^i}{|\mathbf{s}^i|}$
+            \State $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$
+            }
+            
+        \EndFor
+        \State \Return $\mathbf{x}^i$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[t!]
+    \small
+    \caption{The \findprice procedure.}
+    \label{alg:find-price}
+    \begin{algorithmic}[1]
+    \Procedure{\findprice}{$\epsilon, \mathbf{p}, \{\mathbf{x}^i\}, \mathbf{Q}$}
+        \inlong{
+            \State $\mathbf{z} \gets \sum_i \mathbf{x}^i - \mathbf{Q}$
+            \State $\epsilon \gets \epsilon \exp\left(\gamma\frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}\right)$ 
+            \State $\mathbf{p} \gets \mathbf{p} \left(1 + \epsilon\frac{\mathbf{z}}{|\mathbf{z}|}\right)$
+        }
+        \inshort{
+        \State $\mathbf{z} \gets \sum_i \mathbf{x}^i - \mathbf{Q}$; $\epsilon \gets \epsilon \exp\left(\gamma\frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}\right)$; $\mathbf{p} \gets \mathbf{p} \left(1 + \epsilon\frac{\mathbf{z}}{|\mathbf{z}|}\right)$
+        \State \Return $\epsilon, \mathbf{p}$
+        }
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+}
+
+\inshort{
+\begin{algorithm}[t]
+    \small
+    \caption{\finddemand and \findprice for a buyer $b_i$.}
+    \label{alg:find-demand}
+    \begin{algorithmic}[1]
+        \Procedure{\finddemand}{$K_{d}, \mathbf{a}^i, \{\bm{\alpha}^j\}, B^i, \mathbf{p}, K_c, \textsc{type}$}
+        \State random init $|\mathbf{s}^i| = 1$, $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$
+        \For {$K_{d}$ iterations}
+            \State $U^i_\textit{Instance}\gets \sum_j \mathbf{x}^i_j\cdot V(\bm{\alpha}^j)$
+            \State $U^i_\textit{Collection}\gets \sum_t \mathbf{a}^i_t \cdot \log \left(\sum_j \mathbf{x}^i_j \bm{\alpha}^j_t + 1\right)$
+            \State $U^i_\textit{Breeding}\gets \textsc{breeding-utility}(\mathbf{x}^i, K_c, \textsc{type})$
+            \State $U^i\gets U^i_\textit{Instance} + U^i_\textit{Collection} +  U^i_\textit{Breeding} + B^i\mathbf{s}^i_{-1}$
+            \inshort{\State $\mathbf{s}^i\gets \left(\mathbf{s}^i + \epsilon_s\frac{\partial U^i}{\partial \mathbf{s}}\right)$; $\mathbf{s}^i \gets \frac{\mathbf{s}^i}{|\mathbf{s}^i|}$; $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$}
+            \inlong{
+            \State $\mathbf{s}^i\gets 
+            \left(\mathbf{s}^i + \epsilon_s\frac{\partial U^i}{\partial \mathbf{s}}\right)$
+            \State $\mathbf{s}^i \gets \frac{\mathbf{s}^i}{|\mathbf{s}^i|}$
+            \State $\forall j: \mathbf{x}^i_j \gets (\mathbf{s}^i_j B^i)/\mathbf{p}_j$
+            }
+        \EndFor
+        \State \Return $\mathbf{x}^i$
+    \EndProcedure
+    \Procedure{\findprice}{$\epsilon, \mathbf{p}, \{\mathbf{x}^i\}, \mathbf{Q}$}
+        \inlong{
+            \State $\mathbf{z} \gets \sum_i \mathbf{x}^i - \mathbf{Q}$
+            \State $\epsilon \gets \epsilon \exp\left(\gamma\frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}\right)$ 
+            \State $\mathbf{p} \gets \mathbf{p} \left(1 + \epsilon\frac{\mathbf{z}}{|\mathbf{z}|}\right)$
+        }
+        \inshort{
+        \State $\mathbf{z} \gets \sum_i \mathbf{x}^i - \mathbf{Q}$; $\epsilon \gets \epsilon \exp\left(\gamma\frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}\right)$; $\mathbf{p} \gets \mathbf{p} \left(1 + \epsilon\frac{\mathbf{z}}{|\mathbf{z}|}\right)$
+        \State \Return $\epsilon, \mathbf{p}$
+        }
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+}
+
+
+    The connection between the market-clearing condition and competitive equilibrium provides the theoretical foundation for \method. By designing our algorithm to attain NFT market clearing, we solve \problem with two main components (Algorithm~\ref{alg:method}). \findprice refines pricing (to solve \proba) by i) adjusting prices of high-demand NFT instances after buyer recommendations from \finddemand, and ii) designing a \emph{demand-aware} step-size schedule to accelerate convergence. \finddemand then finds optimal buyer purchases (to solve \probb) by i) recommending NFTs based on the updated pricing from \findprice, and ii) selecting appropriate breeding combinations. The adaptive interaction between \findprice and \finddemand ensures that \method converges to market clearing, as proven in Theorem~\ref{thm:convergence}. Moreover, to speed up convergence, we design \textsc{init} for \method to establish initial preference-aware prices, thereby providing a more refined starting point for \method's main iterative process, by iteratively improving them over $K_{init}$ iterations, based on buyer preferences ($\mathbf{a}^i$) and NFT attributes ($\bm{\alpha}^j$). Afterward, \method alternates between refining pricing (via \findprice) and purchasing recommendations (via \finddemand) to progressively converge towards equilibrium. To efficiently manage the complex breeding utility calculations within \finddemand, \method also employs specialized pruning schemes: \emph{\homosfull (\homos)} for \homob and \childb, and \emph{\hetersfull (\heters)} for \heterb. These schemes identify high-potential parent NFT combinations by considering buyer preferences, attribute rarity, and buyer collection styles (\textit{niche} or \textit{eclectic}), thereby significantly reducing the computational burden of exploring all possible breeding options.
+
+
+\subsection{The \finddemand Procedure}
+\label{subsec:method-user-demand}
+    Given a pricing $\mathbf{p}$ obtained in the previous iteration of \findprice, \finddemand solves \probb by finding the \inlong{optimal }purchase recommendation $\mathbf{x}^i$ for each buyer $b_i$ that maximizes their individual utility $U^i$ (Equation~(\ref{eqn:buyer-utility})). As detailed in Algorithm~\ref{alg:find-demand}, \finddemand first introduces an expenditure proportion vector $\mathbf{s}^i\in [0,1]^{M+1}$ for each buyer $b_i$, normalized with its element sum as one (i.e., $\sum_k \mathbf{s}^i_k = 1$). Each element $\mathbf{s}^i_j$ (for $j \neq -1$) represents the fraction of budget $B^i$ allocated to purchase NFT instance $\eta_j$, while a special element $\mathbf{s}^i_{-1}$ represents the fraction of the budget to be retained ($R^i \equiv \mathbf{s}^i_{-1}B^i$). Based on $\mathbf{s}^i$,\inlong{ the recommended purchase quantity is }$\mathbf{x}^i_j \equiv B^i\mathbf{s}^i_j/\mathbf{p}_j$ for NFT $\eta_j$.
+
+    \finddemand iteratively refines $\mathbf{s}^i$ over many iterations. In each iteration, it calculates the instance-wise ($U^i_\textit{Instance}$) and collection-based ($U^i_\textit{Collection}$) utility components using the current $\mathbf{x}^i$. It then derives the breeding utility ($U^i_\textit{Breeding}$) according to the \textsc{breeding-utility} procedure (Section~\ref{subsec:breeding-utility}), which carefully examines diverse breeding configurations. To improve the total utility $U^i$, $\mathbf{s}^i$ is updated using gradient ascent with respect to $U^i$ and then re-normalized (L1-norm) to maintain its interpretation as budget proportions. Through this iterative refinement of $\mathbf{s}^i$ and the corresponding derivation of $\mathbf{x}^i$, \finddemand aims to maximize each buyer's utility $U^i$ while inherently adhering to their budget $B^i$. In contrast to \finddemand, traditional commodity recommendation systems do not incorporate dynamic pricing into purchase suggestions~\cite{he2020lightgcn, wang2019neural, zhang2019deep} and, as they are designed for non-generative items, inherently omit considerations of NFT-specific breeding~\cite{he2020lightgcn, wang2019neural, zhang2019deep, koren2009matrix, chen2019personalized}.
+
+
+\subsection{The \findprice Procedure}
+\label{subsec:findprice}
+
+In each iteration $t$, \findprice improves the pricing $\mathbf{p}^t$ by 
+\begin{equation}\small
+        \label{eqn:update-rule}
+        \mathbf{p}^{t+1} = \mathbf{p}^t\left(1 + \epsilon^t\frac{\mathbf{z}}{\lVert\mathbf{z}\rVert_2}\right),\,\,
+        \mathbf{z} \defeq \sum_i \mathbf{x}^i(\mathbf{p}^t) - \mathbf{Q},
+    \end{equation}    
+    where $\mathbf{z}$ is the \emph{excess demand}, \ie, the difference between the sum of $\mathbf{x}$ (recommendation from \finddemand) and $\mathbf{Q}$. In particular, prices are raised for NFT $\eta_j$ when $\mathbf{z}_j>0$ and vice versa. To expedite convergence, we design an adaptive \emph{demand-aware} scheduling, 
+
+    \begin{equation}\small
+    \label{eqn:ba-stepsize}
+        \epsilon^t = \epsilon^{t-1} \exp\left(
+        % \gamma
+        \frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}
+        \right),
+    \end{equation}
+    where $\epsilon^{t-1}$ is the step size in the previous iteration\inbin{ and $\gamma > 0$ is a hyperparameter}. 
+    Intuitively, we increase the step size when the overall market imbalance (i.e., the normalized magnitude of total excess demand $\frac{\lVert\mathbf{z}\rVert_2}{\lVert\mathbf{Q}\rVert_2}$) becomes substantial to support a more \inlong{imminent and }decisive price adjustment to rapidly correct significant demand-supply disparities and thereby expedite convergence towards equilibrium.
+    % The scheduling scales the step-size according to the excess demand $\mathbf{z}$ (normalized by the total supply), accelerating when $\mathbf{z}$ becomes larger.
+    
+\begin{algorithm}[t!]
+    \small
+    \caption{The \textsc{breeding-utility} calculation.}
+    \label{alg:breeding-utility}
+    \begin{algorithmic}[1]
+    \Procedure{breeding-utility}{$\mathbf{x}^i, K_c, \textsc{type}$}
+    \If{\textsc{type} \textbf{is} homo \textbf{or} child}
+        \inlong{\State} $\mathcal{C}\gets$ \homos$(i, K_c)$
+    \EndIf
+    \If{\textsc{type} \textbf{is} niche \textbf{or} eclectic} 
+        \inlong{\State} $\mathcal{C}\gets$ \heters$(i, K_c)$
+    \EndIf
+    \inlong{
+    \State $c_{breed}\gets 0$
+    \State $U^i_\textit{Breeding}\gets 0$
+    }
+    \inshort{
+    \State $c_{breed}\gets 0$; $U^i_\textit{Breeding}\gets 0$
+    }
+    \For {$\mathcal{P}$ \textbf{in} $\mathcal{C}$} 
+        \State $r_{breed}\gets \frac{1}{|\mathcal{P}|}\sum_{\eta_j\in \mathcal{P}} \min(\mathbf{x}^i_j, 1)$
+        \State $c_{breed}\gets c_{breed}+r_{breed}$
+        \State $U^i_\textit{Breeding}\gets U^i_\textit{Breeding} + r_{breed}^i\mathbb{V}^{i, \textsc{type}}[\mathcal{P}]$
+        \If{$c_{breed} \geq k$} 
+            \textbf{break}
+        \EndIf
+    \EndFor
+    \State\Return $U^i_\textit{Breeding}$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[t!]
+    \small
+    \caption{\homos(\homosfull)}
+    \label{alg:homos}
+    \begin{algorithmic}[1]
+    \Procedure{\homos}{$i, K_c$}
+    \State $\mathcal{L}\gets$ top $K_c$ instances from $\mathcal{M}$ \textbf{sorted by} $f_{pop}(\eta_j)\Tilde{V}^i(\eta_j)$
+    \State $\mathcal{C}\gets \{(\eta_p, \eta_q) \mid \eta_p, \eta_q\in \mathcal{L},  \eta_p\neq \eta_q\}$
+    \State \textbf{sort} $\mathcal{C}$ \textbf{by} $\frac{1}{2}\sum_{\eta\in\mathcal{P}}f_{pop}(\eta_p)\Tilde{V}^i(\eta)$
+    \State \Return $\mathcal{C}$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[t!]
+    \small
+    \caption{\heters(\hetersfull)}
+    \label{alg:heters}
+    \begin{algorithmic}[1]
+    \Procedure{\heters}{$i, K_c$}
+    \inlong{\State Initialize $\mathcal{C}$ as an empty set.}
+    \State\inshort{$\mathcal{C}\gets\{\}$;} $\mathcal{L}\gets$ top $K_c$ instances from $\mathcal{M}$ \textbf{sorted by} $\Tilde{V}^i(\eta_j)$
+    \For {$\eta_j$ \textbf{in} $\mathcal{L}$}
+        \State $\mathcal{P}\gets\{\eta_j\}$
+        \For {$k$ \textbf{from} $j$ \textbf{to} $K_c$}
+        \inlong{
+        \If{$trait\_division(\eta_k)$ \textbf{not in} $\mathcal{P}$}
+        \State $\mathcal{P}$ \textbf{append} $\eta_k$
+        \EndIf
+        \If {$|\mathcal{P}| = D$} 
+        \State $\mathcal{C}$ \textbf{append} $\mathcal{P}$
+        \State \textbf{break}
+        \EndIf
+        }
+        \inshort{
+        \If{$trait\_division(\eta_k)$ \textbf{not in} $\mathcal{P}$}
+        $\mathcal{P}$ \textbf{append} $\eta_k$
+        \EndIf
+        \If {$|\mathcal{P}| = D$} 
+        $\mathcal{C}$ \textbf{append} $\mathcal{P}$; \textbf{break}
+        \EndIf
+        }
+        \EndFor
+    \EndFor
+    \State $\mathbb{F}\equiv \mathbb{M}$ \textbf{if} $b_i$ \textbf{is} niche collector \textbf{else} $\mathbb{F}\equiv \mathbb{U}$ 
+    \State \textbf{sort} $\mathcal{C}$ \textbf{by} $\mathbb{F}(\mathcal{P})\sum_{\eta\in\mathcal{P}}\Tilde{V}^i(\mathcal{P})$ 
+
+    \State \Return $\mathcal{C}$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{The \textsc{breeding-utility} Improvement} 
+\label{subsec:breeding-utility} 
+
+    Optimizing $U^i_\textit{Breeding}$ by brute-force examination of all parent combinations $\mathcal{P}$ in \textsc{breeding-utility} (Algorithm~\ref{alg:breeding-utility}) is computationally prohibitive. To enhance scalability, we design \emph{\homosfull (\homos)} (Algorithm~\ref{alg:homos}) for \homob and \childb, and \emph{\hetersfull (\heters)} (Algorithm~\ref{alg:heters}) for \heterb. \homos and \heters identify a candidate set $\mathcal{C}$ of promising parent NFT sets by selectively evaluating preferences across various breeding and buyer types to reduce computational overhead.\inshort{\footnote{Illustrations of \homos and \heters is presented in~\cite{supplementary}.}}
+
+    Specifically, since $U^i_\textit{Breeding}$ (Definition~\ref{def:buyer-utility-breeding}) prioritizes high-value parent combinations, pruning less valuable pairs from the search space is important. Parent candidates are first sorted for each buyer to evaluate the influence of buyer-specific preferences ($\Tilde{V}^i$) on breeding utility. For \homob and \childb, \homos ranks NFTs by $f_{pop}(\eta_j)\Tilde{V}^i(\eta_j)$, selecting the top $K_c$ for a candidate list $\mathcal{L}$ to reduce the search space. According to $f_{pop}$, it yields a competitor-aware list prioritizing rarer outcomes. Candidate set $\mathcal{C}$ then includes all parent pairs $\mathcal{P}$ formed from $\mathcal{L}$, ranked by their combined $\Tilde{V}^i(\eta_p) + \Tilde{V}^i(\eta_q)$.
+
+    For \heterb, \heters selects the top-$K_c$ list $\mathcal{L}$ from $\mathcal{M}$ based on $\Tilde{V}^i$. Parent sets $\mathcal{P} \in \mathcal{C}$ are formed by selecting one parent from $\mathcal{L}$ and completing the set with others from $\mathcal{L}$ to carefully include all trait divisions. These sets $\mathcal{P}$ are then ranked by attribute class consistency ($\mathbb{M}(\mathcal{P})$) or diversity ($\mathbb{U}(\mathcal{P})$) to suit niche or eclectic collectors, respectively (Definition~\ref{def:heterogeneous-breeding}), identifying high-value, tailored parent sets to effectively accelerate \method's convergence (Proposition~\ref{prop:pruning_approx}).
+
+    From candidate set $\mathcal{C}$, an optimal subset $\mathcal{K}^i \subseteq \mathcal{C}$ is chosen for buyer $b_i$. $\mathcal{K}^i$ maximizes $\sum_{\mathcal{P}\in \mathcal{K}^i} r_{breed}^i(\mathcal{P})\mathbb{V}^{i, \textsc{type}}\left[\mathcal{P}\right]$ with the total breeding rate $\sum_{\mathcal{P}\in \mathcal{K}^i}r_{breed}^i(\mathcal{P}) \leq k$ (the breeding count limit). The selection involves iteratively adding parent pairs from the ranked candidate set $\mathcal{C}$ to $\mathcal{K}^i$, ensuring the total breeding rate remains within the limit $k$. For efficient calculation of $f_{pop}(\eta_c)$ used in $\mathbb{V}^{i, homo}$ for \homob \inlong{(dependent on global child attribute counts $q(\bm{\alpha}^c_t)$)}, we exploit a hash map to track processed parent sets per buyer. Global attribute counts $q(\bm{\alpha}^c_t)$ are updated by aggregating anticipated child attributes from all buyers' current breeding decisions (weighted by their $r_{breed}^i(\mathcal{P})$).
+
+    The overall complexity of \method is presented as follows.
+
+\begin{theorem}
+    \label{thm:time-complexity}
+        By applying \homos under \homob and \childb, \method's time complexity is reduced from $O(KNM^2)$ to $O(KN|\mathcal{C}|)$, where $K$ is the iteration count, $|\mathcal{C}|$ is the constant candidate set length, and $N$, $M$, and $D$ is the number of buyers, NFT instances, and trait divisions, respectively. Similarly, applying \heters under \heterb lowers the time complexity from $O(KNM^D)$ to $O(KN|\mathcal{C}|)$\inshort{\xspace(proved in~\cite{supplementary})}. 
+    \inlong{
+    \begin{proof}
+        In Algorithm~\ref{alg:method}, the \finddemand procedure is called $KN$ times, where $K$ is a constant iteration number while $N$ is the number of buyers. Under \homob and \childb, the \finddemand must consider all possible parent NFT pairs to calculate the NFT breeding utility in the order of $O(M^2)$, where $M$ is the number of NFT instances. Under \heterb, assuming $D$ trait divisions evenly distribute $M$ NFT instances, all possible parent NFT sets are in the order of $O(M^D)$. By utilizing \homos or \heters, the considered NFTs parent sets are reduced from $M^2$ or $M^D$ to the constant length of the candidate set $|\mathcal{C}|$. Thus, the time complexity of \method becomes $O(KN|\mathcal{C}|)$.
+    \end{proof}
+    }
+\end{theorem}
+        
+\inlong{
+
+
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/illu/newopps.jpg}
+    \caption{Illustration of \homos in the \textsc{breeding-utility} procedure with the \textit{Heterosis} project (also presented in Fig.~\ref{fig:breeding-example}(\protect\subref{subfig:homogeneous-breeding})). \homos selects the top $K_c$ NFT instances to form $\mathcal{L}$, then forms the candidate set $\mathcal{C}$ by pairing NFT instances in $\mathcal{L}$. Without \homos, the candidate set would increase to $M(M-1)/2$, where $M$ is the number of NFT instances. Thus, \homos reduces the search space by focusing on the most promising parent pairs $\mathcal{P}$ to generate child NFTs. The resulting candidate set $\mathcal{C}$ is further sorted following step $4$ of Algorithm~\ref{alg:homos}.}
+    \label{fig:illustrate-homos}
+\end{figure}
+\begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/illu/newhpss.jpg}
+        \caption{Illustration of \heters in the \textsc{breeding-utility} procedure with the \textit{Pann} project (also presented in Fig.~\ref{fig:breeding-example}(\protect\subref{subfig:heterogeneous-breeding})). \heters selects the top $K_c$ NFT instances to form $\mathcal{L}$, then forms the candidate set $\mathcal{C}$ by iteratively taking an NFT instance as the first instance in $\mathcal{P}$ and choosing subsequent NFT instances from $\mathcal{L}$ to form the parent set $\mathcal{P}$, consisting of one NFT instance from each trait division. Without \homos, the candidate set would increase to the order of $(M/D)^D$, where $M$ is the number of NFT instances and $D$ is the number of trait divisions. Thus, \heters trims the search space by focusing on the most promising parent sets $\mathcal{P}$ to generate child NFTs while following the mechanism of \heterb. The resulting candidate set $\mathcal{C}$ is further sorted following step $10$ of Algorithm~\ref{alg:heters}.}
+    \label{fig:illustrate-heters}
+\end{figure}
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imgs/illu/pann.jpg}
+    \caption{Trait divisions, attribute classes, and names of individual NFT instances in the Pann~\cite{pann} project.}
+    \label{fig:pann}
+\end{figure}
+
+\subsection{Illustrations for \homos and \heters}
+\label{appsubsec:breeding-utility}
+
+    Figs.~\ref{fig:illustrate-homos} and~\ref{fig:illustrate-heters} provide illustrative examples for \homos and \heters using the \emph{Pann} project, respectively, while Fig.~\ref{fig:pann} showcases the trait divisions, attribute classes, and NFT instance names within the \emph{Pann} project. As shown in Fig.~\ref{fig:illustrate-homos}, for buyer $b_i$, \homos first ranks $\mathcal{M}$ by $f_{pop}(\eta)\Tilde{V}^i(\eta)$ and selects the top $K_c$ NFT instances to form the candidate list $\mathcal{L}$. Then, it forms the candidate set $\mathcal{C}$ by pairing NFT instances in $\mathcal{L}$. This process trims the search space by focusing on the most promising parent pairs $\mathcal{P}$ for generating child NFTs. For instance, in Fig.~\ref{fig:illustrate-homos}, based on the sorted candidate list $\mathcal{L}$, the top parent candidate pairs consisting of the first (blue flower) and second (pink flower) NFTs are placed at the top.
+    
+    On the other hand, as illustrated in Fig.~\ref{fig:illustrate-heters} with trait divisions and attribute classes detailed in Fig.~\ref{fig:pann}, \heters selects the top $K_c $ NFT instances to form the set $\mathcal{L}$ based on $\Tilde{V}^i(\eta)$. It then constructs the candidate set $\mathcal{C}$ by iteratively choosing an NFT instance as the initial element in the parent set $\mathcal{P}$ and subsequently selecting additional NFT instances from $\mathcal{L}$. Each parent set $\mathcal{P}$ consists of one NFT instance from each trait division. Concretely, in Fig.~\ref{fig:illustrate-heters}, \heters initially selects ``moon" from the ``WINDS" trait division, then proceeds to select ``blue" from the ``STRINGS" division and ``sea" from the ``AMBIENCE" division, while skipping ``mars," another instance from the ``WINDS" division. The resulting parent set of ``moon," ``blue," and ``sea" thus occupies the first position in the candidate set $\mathcal{C}$. Note that the naming of these NFT instances is detailed in Fig.~\ref{fig:pann}. Once $\mathcal{C}$ is fully constructed, \heters ranks the parent sets based on either the consistency or diversity of attribute classes, catering to niche or eclectic collectors, respectively. For instance, the parent set consisting of ``moon," ``blue," and ``sea" all belong to the ``Sea" attribute class, making it more appealing to niche collectors while less so to eclectic collectors. Thus, after sorting by $\mathbb{M}$, the NFT parent set consisting of ``moon,'' ``blue,'' and ``sea'' is raised to the top of the candidate sets for $b_i$ as a niche collector, since all three NFTs belong to the same attribute class ``Sea.'' In contrast, after sorting by $\mathbb{U}$, the NFT parent set consisting of ``blue,'' ``mars,'' and ``sand'' is raised to the top of the candidate sets for $b_i$ as an eclectic collector, since all three NFTs belong to different attribute classes. By sorting the parent sets according to the buyer's preferences, we ensure that the pruned candidate set can still be approximately optimal.
+    
+    
+    % This process trims the search space while following the mechanism of \heterb, focusing on the most promising sets of parents $\mathcal{P}$ to generate child NFTs that align with the objectives of niche and eclectic collectors. 
+
+
+\subsection{Discussions of alternative formulations}
+\label{appsub:alternative}
+In this work, we formulate the buyers utility as 
+\begin{equation}
+    U^i \defeq U^i_\textit{Instance} + U^i_\textit{Collection} + U^i_\textit{Breeding} + R^i.
+\end{equation}
+Alternatively, parameters $\lambda_{I}$, $\lambda_{C}$, $\lambda_{B}$, and $\lambda_{R}$ can be added to weight the importance of each component as
+\begin{equation}
+    U^i \defeq \lambda_{I}U^i_\textit{Instance} + \lambda_{C}U^i_\textit{Collection} + \lambda_{B}U^i_\textit{Breeding} + \lambda_{R}R^i.
+\end{equation}
+
+The remaining budget $R^i$ acts as a regularization term, balancing the utility of NFT purchases against money-saving, as detailed in~\cite{zhang2022price}. If buyers have dedicated funds for NFTs and plan to exhaust them, setting $\lambda_{R}=0$ is appropriate. Conversely, $\lambda_{I}$, $\lambda_{C}$, and $\lambda_{B}$ can be adjusted according to feature important analysis~\cite{altmann2010permutation, chen2023algorithms} to reflect the relative importance of instance valuation, collection formation, and breeding. The values may also be set based on expert knowledge. For instance, speculative buyers who prioritize the inherent value of NFTs can be assigned a higher $\lambda_{I}$. Buyers who are active on social media and showcase their collections may require a higher $\lambda_{C}$. Similarly, $\lambda_{B}$ can be emphasized based on the significance of the breeding mechanism for certain buyers.
+
+Additionally, a more general form can be expressed as $U^i_\textit{Total} = f(U^i_\textit{Instance}, U^i_\textit{Collection}, U^i_\textit{Breeding}, R^i)$, where $f$ represents an aggregation function. For instance, an alternative formulation could aggregate NFT utilities multiplicatively as $U^i_\textit{Total} = U^i_\textit{Instance} \cdot U^i_\textit{Collection} \cdot U^i_\textit{Breeding} + R^i$. However, this method may constrain the utility by the minimum value among $U^i_\textit{Instance}$, $U^i_\textit{Collection}$, and $U^i_\textit{Breeding}$, potentially leading to a utility dominated by one component. Thus, more nuanced formulations tailored to specific buyer profiles are necessary and to be explored in future user studies.
+
+\subsection{Extensions for Additional Applications}
+\label{appsubsec:extension-application}
+    Although \method takes into account the breeding mechanism, a unique feature of NFT projects that introduces challenging issues, it is applicable to many application scenarios without breeding, i.e., $U_\textit{Breeding}=0$. When the price is given, we can simply use \finddemand as a standalone scheme to recommend and optimize the buyer utilities. 
+    
+    \textit{1) Traditional commodity and travel packages}~\cite{chen2013travel, liu2011personalized, ge2011cost}. Each NFT instance represents a tourist destination with attributes detailing activities such as dining and shopping. The quantity denotes the capacity (\eg, available seats). Buyers may acquire multiple destinations, with $U_\textit{Instance}$ quantifying the utility of each destination and $U_\textit{Collection}$ denoting the incremental utility of similar activities between destinations. 
+    
+    \textit{2) Crowdsourcing and Talent recruitment}~\cite{wang2021efficient, chai2018incentive, zhao2020predictive, yao2022knowledge}. Here, each NFT instance represents a task or job opening, with attributes representing the required skills and the and quantity representing the man count or total budget for compensation. Buyers represent participants in a crowdsourced project or applicants for job listings. The abilities or skill entities of the participants can be represented by the buyers' preferences. In this context, we can leverage $U_\textit{Instance}$ to represent the utility of participating in a crowdsourced project and set $U_\textit{Collection}=0$. In particular, for $U_\textit{Instance}$ we can leverage the objective valuation $V$ to model worker compensation or salary. Furthermore, we can adjust  to leverage the amalgamated valuation $\Tilde{V}$ instead of the objective valuation $V$ to represent the objective compensation weighted by the compatibility of a participant’s skills (preferences) with the required skills (attributes).
+    
+
+    \textit{3) Concert Ticketing}~\cite{sastiono2016studies, stein2014will}. Ticket scalping has long been a significant societal issue, leading to inflated prices and limited access for genuine fans~\cite{stein2014will}. \method provides a potential solution, where each NFT instance can be treated as a type of seat with attributes such as location and base price, while capacity corresponds to the number of seats available. Buyers, representing concert-goers, have a certain budget reflecting their willingness to pay. Here, $U_{\textit{Instance}}$ captures the immediate utility of each seat based on factors like proximity to the stage or acoustic quality. Moreover, $U_{\textit{Collection}}$ can incorporate the additional utility of securing adjacent seats for a group, ensuring that friends or family members can enjoy the event together. By using \method, it becomes possible to match buyers with optimal ticket allocations that consider both individual seat attributes and the collective value of group seating arrangements, ultimately fostering fairness and transparency.
+    
+    
+    % by treating tickets for each seat as individual NFTs, where attributes such as seat location and pricing are explicitly modeled. Buyers can optimize their utility ($U_\textit{Instance}$) based on preferences like proximity to the stage or acoustics, while $U_\textit{Collection}$ is set to 0, as there is no incremental utility for purchasing multiple tickets in this context. Additionally, \method can incorporate dynamic pricing strategies to balance demand and maximize overall satisfaction, using $U_\textit{Instance}$ to reflect the buyer's willingness to pay for a particular seat. This approach ensures fair allocation and pricing, reducing the influence of scalpers while improving transparency and accessibility in ticket distribution.
+    
+    % \textit{4) Talent recruitment}~\cite{mohamed2018smart, stein2014will}. Each NFT instance represents a talent, with attributes describing their skills, experience, and qualifications. The quantity denotes the number of positions the talent is open to filling (\eg, part-time or freelance roles). Buyers are company recruiters, who select talents based on their organizational needs. $U_\textit{Instance}$ quantifies the utility of hiring a specific talent, reflecting the alignment between the talent's skills and the role’s requirements. $U_\textit{Collection}$ can capture the incremental utility of assembling a team with complementary skill sets or filling multiple positions. 
+     
+    \textit{4) Umbrella fundraising}~\cite{eckel2020independent, li2016social}. Each NFT instance corresponds to a contribution slot under a larger campaign. Attributes such as the project’s goals, category, and milestones help characterize its impact. Buyers represent donors with varying budgets, reflecting the funds they are willing to allocate to charitable causes. 
+    % While the initial environment may be less price-competitive by nature, integrating \method’s pricing and recommendation mechanisms can create an environment where limited contribution slots become valuable. This controlled scarcity encourages more active participation and can lead to higher total funds raised, thereby promoting more effective philanthropy.
+    Here, $U_{\textit{Instance}}$ measures the donor’s value from supporting a single campaign based on the alignment with their philanthropic interests. Additionally, $U_{\textit{Collection}}$ may capture the greater sense of collective purpose attained by supporting multiple related campaigns that together achieve broader societal benefits.
+
+
+    % Each NFT instance represents a specific fundraising campaign under the umbrella, with attributes such as the project’s goals, category (\eg, education, healthcare), and funding milestones. The quantity corresponds to the number of contributions needed to achieve the target (\eg, individual donation slots). Buyers are donors who select campaigns based on their interests and preferences. $U_\textit{Instance}$ quantifies the utility of supporting a particular campaign, reflecting factors like the donor's alignment with the project’s mission or perceived social impact. $U_\textit{Collection}$ can capture the incremental utility of supporting multiple campaigns, particularly if there is synergy between projects (\eg, a healthcare initiative complemented by an education campaign in the same region).
+
+    Besides, for advanced NFT settings, \method can be extended for \textit{1) session-based NFT recommendation}, where NFT instances are released over multiple sessions. A straightforward approach is to restart and run \method in each session, with NFTs acquired in previous sessions taken into account when calculating buyers' new utilities. To reduce computation, new recommendations may be initialized based on previous results to accelerate convergence. \textit{2) whole units}. \method can recommend under whole unit NFT settings by treating $\mathbf{x}^i$ as a purchasing probability in \findprice and rounding the final recommendation of \finddemand to integer values.
+
+}
+\section{Theoretical Analysis}
+\label{sec:theory}
+In this section, we prove that \method converges to the competitive equilibrium for \problem, where the equilibrium is connected to the market clearing condition based on Proposition~\ref{prop:equilibrium}. 
+
+\method's convergence is proven by a) leveraging an aggregate utility (Theorem~\ref{thm:aggregate=individual-equilibrium}), b) establishing excess demand potential and its gradient (Theorem~\ref{thm:convexity-gradient}), and c) deriving the convergence with the gradient scheme (Theorem~\ref{thm:convergence}). Besides, we design the demand-aware step-size scheduling (Equation~(\ref{eqn:ba-stepsize})) to accelerate the convergence process. Intuitively, \findprice adjusts prices inversely to excess demand $z$ (Equation~(\ref{eqn:update-rule})), encouraging \finddemand to reduce purchase demand for over-demanded NFTs and vice versa. Thus, each iteration naturally progresses towards the market clearing condition, with careful step-size scheduling that progressively reducing the step sizes to avoid overshooting. In particular, we verify that \method converges with the acceleration of demand-aware scheduling in the ablation study in Section~\ref{subsec:ablation_tests}.
+
+\inshort{\noindent\textbf{Aggregated Utility.}}
+\inlong{\subsection{Aggregated Utility}}
+We first prove that an optimal solution for an aggregated utility $U$ aligns with the optimal solution for $U^i(\mathbf{x}^i)$ of each buyer $b_i$. \inshort{$U$}\inlong{The aggregated utility} is defined as follows.
+\begin{equation}\small
+    U \defeq \prod_i U^i(\mathbf{x}^i)^{\beta^i} \text{ , and } \beta^i\defeq B^i/\sum_i B^i,
+\end{equation}  
+where the exponent $\beta^i$ is the normalized budget, which will become a scalar weight whe $U$ is log-transformed. It finds the following solution
+\begin{equation}\small
+    \label{eqn:maximal-solution}
+     \bar{\mathbf{x}}^1,\ldots, \bar{\mathbf{x}}^N \in \argmax_{\mathbf{x}^1,\ldots, \mathbf{x}^N} U,\,\,s.t. \sum_i\mathbf{x}^i\leq \mathbf{Q}.
+\end{equation}
+
+\begin{theorem}
+    \label{thm:aggregate=individual-equilibrium}
+    Assuming $U^i$ (and thus $U$) are concave, homogeneous, continuous, and non-decreasing utility functions, the aggregated solution $\bar{\mathbf{x}}^i$ to Equation~(\ref{eqn:maximal-solution}) is an optimal solution to Equation~(\ref{eqn:equilibrium-solution}). \inshort{(Please see the proofs in~\cite{supplementary}.)}
+    \inlong{
+        \begin{proof}
+        First, note that $\sum_i\bar{\mathbf{x}}^i = \mathbf{Q}$. Otherwise, we may add the remaining supply to any buyer and obtain a larger $U$ as it is non-decreasing. We use the mathematical properties of homogeneous functions presented in~\cite{eisenberg1961aggregation, eisenberg1961duality}. In particular, due to the duality in homogeneous function programming~\cite{eisenberg1961duality}, if $\{\bar{\mathbf{x}}^i\}_{i=1}^N \in \argmax_{\sum_i\mathbf{x}^i\leq \mathbf{Q}} U$, there exists $\mathbf{q}\in\mathbb{R}^M$ such that 
+        \begin{equation}\small
+        \label{eqn:bareqn-1}
+            \sum_i\bar{\mathbf{x}}^i \cdot\mathbf{q}= \mathbf{Q}\cdot\mathbf{q}= \prod_i U^i(\bar{\mathbf{x}}^i)^{\beta^i}
+        \end{equation}
+        and 
+        \begin{equation}\small
+        \label{eqn:bareqn-2}
+            \sum_i\mathbf{x}^i \cdot\mathbf{q}\geq \prod_i U^i(\mathbf{x}^i)^{\beta^i}
+        \end{equation}
+        for any $\mathbf{x}^i$. Divide both sides of Equation~(\ref{eqn:bareqn-2}) by the last two terms of Equation~(\ref{eqn:bareqn-1}) respectively, we obtain
+        \begin{equation}\small
+            \sum_i\mathbf{x}^i \cdot \boldsymbol{\rho} \geq \prod_i \left(\frac{U^i(\mathbf{x}^i)}{U^i(\bar{\mathbf{x}}^i)}\right)^{\beta^i},
+        \end{equation}
+        where $\boldsymbol{\rho}=\frac{\mathbf{q}}{\mathbf{Q}\cdot \mathbf{q}}$. Consider the case where only buyer $k$ deviates from the aggregated solution, \ie, $\mathbf{x}^i = \bar{\mathbf{x}}^i, i\neq k$ and denote buyer $k$'s allocation as $\mathbf{x}^k$. Then 
+        \begin{equation}\small
+            \label{eqn:deviation-inequality}
+            \sum_i\mathbf{x}^i \cdot \boldsymbol{\rho} = \mathbf{Q}\cdot \boldsymbol{\rho} -(\bar{\mathbf{x}}^k-\mathbf{x}^k)\cdot \boldsymbol{\rho} \geq \left(\frac{U^k(\mathbf{x}^k)}{U^k(\bar{\mathbf{x}}^k)}\right)^{\beta^k}
+        \end{equation}
+        We now utilize the homogeneous property of $U^k$. In particular, suppose that $\mathbf{x}^k = \lambda \bar{\mathbf{x}}^k$ for some scalar $\lambda$, since by the definition of $\boldsymbol{\rho}$, $\mathbf{Q}\cdot\boldsymbol{\rho} = 1$, we have $\boldsymbol{\rho} \cdot \bar{\mathbf{x}}^k (\lambda - 1) \geq \lambda^{\beta^k} - 1$ by Equation (\ref{eqn:deviation-inequality}). By taking the limit of $\lambda$ approaching $1$ from positive to negative, we find 
+        \begin{equation}\small
+            \boldsymbol{\rho}\cdot \bar{\mathbf{x}}^k = \lim_{\lambda \rightarrow 1} \frac{1-\lambda^{\beta^k}}{1-\lambda} = \beta^k
+        \end{equation}
+        In other words, $\boldsymbol{\rho}$ can be considered as the corresponding price vector for the solution $\bar{\mathbf{x}}$. However, since $\sum_i \bar{\mathbf{x}}^i \cdot \boldsymbol{\rho} = \mathbf{Q}\cdot \boldsymbol{\rho} = 1$, by Equation~(\ref{eqn:deviation-inequality}), any $\mathbf{x}^k$ that satisfies the budget constraint $\mathbf{x}^k\cdot \boldsymbol{\rho} = \beta^k$ finds $\left(\frac{U^k(\mathbf{x}^k)}{U^k(\bar{\mathbf{x}}^k)}\right)^{\beta^k} \leq 1$, and thus $U^k(\mathbf{x}^k) \leq U^k(\bar{\mathbf{x}}^k)$, implying that the buyer $k$ can not improve his own utilities by deviating from the aggregated solution. The theorem follows.
+    \end{proof}
+    }
+\end{theorem}
+
+\inshort{\noindent\textbf{Excess Demand Potential.}}
+\inlong{\subsection{Excess Demand Potential}}
+To assess the deviation from equilibrium before convergence, we introduce the excess demand potential $\phi$ using the Lagrangian of $\log U = \sum_{i} \beta_i \log U^i(\mathbf{x}^i)$, where $\log$ is applied for a simplified representation~\inlong{\cite{cheung2013tatonnement},~}\cite{devanur2008market}. The optimization problem of $\log U$ under the supply constraint (Equation~(\ref{eqn:equilibrium-solution})) yields the Lagrangian formulation below.
+\begin{equation}\small
+    \label{eqn:lagrangian}
+    \mathscr{L}(\{\mathbf{x}^i\}, \mathbf{p}) \defeq \sum_i \beta^i\log U^i(\mathbf{x}^i) - \sum_j \mathbf{p}_j (\sum_i\mathbf{x}^i_j - \mathbf{Q}_j),
+\end{equation}
+where $\mathbf{p}_j$ is the Lagrangian multipliers corresponding to the price of item $j$. Based on the Lagrangian $\mathscr{L}$, the potential function becomes
+\begin{equation}\small
+    \label{eqn:potential-function}
+    \phi \defeq \max_{\{\mathbf{x}^i\}} \mathscr{L}(\{\mathbf{x}^i\}, \mathbf{p}).
+\end{equation}
+
+\begin{theorem}[Convexity and gradient of $\phi$]
+\label{thm:convexity-gradient}
+    $\phi$ defined in Equation~(\ref{eqn:potential-function}) is convex and $\nabla\phi = -\mathbf{z}$, where $\mathbf{z}$ is defined in Equation~(\ref{eqn:update-rule})\inshort{\xspace(proved in~\cite{supplementary})}.
+\inlong{
+    \begin{proof}
+    First, we observe that $\phi$ is convex by the construction of Equation~(\ref{eqn:lagrangian}). Second, since $\mathscr{L}$ is the Lagrangian of the aggregated utility, $\argmax_{\{\mathbf{x}^i\}}\mathscr{L}(\{\mathbf{x}^i\}, \mathbf{p})$ optimizes the aggregated utility $U$. Thus, by Theorem~\ref{thm:aggregate=individual-equilibrium}, it is also the demand allocation that maximizes individual utilities $U^i$. However, since the potential $\phi$ is defined as the maximum of many linear functions (with regard to $\mathbf{p}$), the gradient is given by taking the $\argmax$ of $\mathbf{x}$~\cite{cheung2013tatonnement}. Thus, by Equation~(\ref{eqn:lagrangian}) and (\ref{eqn:potential-function}), we have
+    \begin{equation}\small
+        \nabla\phi = -\left(\sum_i\argmax_{\mathbf{x}^i} U^i(\mathbf{x}^i) -\mathbf{Q}\right) \defeq -\mathbf{z}.
+    \end{equation}
+    The theorem follows.
+    \end{proof}
+}
+\end{theorem}
+
+\inshort{\noindent\textbf{Gradient Descent Convergence Analysis.}}
+\inlong{\subsection{Gradient Descent Convergence Analysis}}
+Given the excess demand potential $\phi$, \method exploits the gradient descent to converge to the competitive equilibrium.
+
+\begin{theorem}
+\label{thm:convergence}
+    Denote $\mathbf{p}^*\defeq\argmin_\mathbf{p}\phi(\mathbf{p})$ as the minimizer of the convex potential $\phi$, and the optimal $\phi^* \defeq \phi(\mathbf{p}^*)$. Assume $\nabla\phi$ is $L\dash$ Lipschitz continuous and step-size $\epsilon\leq \frac{2}{L}$. For any starting point $\mathbf{p}^0$, $\lim_{t\rightarrow\infty} \phi(\mathbf{p}^t) = \phi^*$\inshort{\xspace(proved in~\cite{supplementary})}.
+    \inlong{
+    \begin{proof}
+        We follow~\cite{nesterov2018lectures} to derive the proof. We first observe that the distance $\lVert\mathbf{p}^t-\mathbf{p}^*\rVert^2$ is non-increasing with respect to $t$. 
+        \begin{equation}\small
+        \begin{split}
+            &\lVert\mathbf{p}^{t+1}-\mathbf{p}^*\rVert^2
+            % \\&=\lVert\mathbf{p}^t - \mathbf{p}^* - \epsilon\nabla\phi(\mathbf{p}^t)\rVert^2
+            \\&= \lVert\mathbf{p}^{t}-\mathbf{p}^*\rVert^2 -2\epsilon\nabla\phi(\mathbf{p}^{t})\cdot(\mathbf{p}^{t} - \mathbf{p}^*) + \epsilon^2\lVert\nabla\phi(\mathbf{p}^{t})\rVert^2
+            \\&\leq \lVert\mathbf{p}^{t}-\mathbf{p}^*\rVert^2 - \epsilon(2/L - \epsilon)\lVert\nabla\phi(\mathbf{p}^{t})\rVert^2,
+        \end{split}
+        \end{equation}
+        where the $L\dash$Lipschitz condition is applied to the middle term to obtain the inequality. Next, we leverage the basic assumptions on $\phi$ to find $\nabla\phi(\mathbf{p}^t)(\mathbf{p}^{t+1} - \mathbf{p}^t) \leq \phi(\mathbf{p}^{t+1}) - \phi(\mathbf{p}^t) \leq \frac{L}{2}\lVert \mathbf{p}^{t+1} - \mathbf{p}^{t}\rVert^2$, where the first inequality holds due to convexity while the second inequality is due to $L\dash$Lipschitzness. Rearranging the terms and applying $L\dash$Lipschitzness to connect the norm distance term and the gradient term again, we find 
+        \begin{equation}\small
+            \label{eqn:convex_proof_phi_diff}
+            \phi(\mathbf{p}^{t+1}) \leq \phi(\mathbf{p}^t) - \epsilon(1-\epsilon L/2)\lVert\nabla\phi(\mathbf{p}^t)\rVert^2.
+        \end{equation}
+        Again, by convexity, $\phi(\mathbf{p}^t) - \phi^* \leq \nabla\phi(\mathbf{p}^t)\cdot (\mathbf{p}^t-\mathbf{p}^*)$. However, since the distance $\lVert\mathbf{p}^t- \mathbf{p}^*\rVert$ is decreasing, we may find the following bound.
+        \begin{equation}\small
+            \label{eqn:convex_proof_bound}
+            \phi(\mathbf{p}^t) - \phi^* \leq \lVert\nabla\phi(\mathbf{p}^t)\rVert\lVert\mathbf{p}^0-\mathbf{p}^*\rVert
+        \end{equation}
+        Therefore, applying Equation~(\ref{eqn:convex_proof_phi_diff}) for the difference between consecutive $\phi$ values onto Equation~(\ref{eqn:convex_proof_bound}), we find the following inequality bound.
+        \begin{equation}\small
+        \begin{split}
+            \phi(\mathbf{p}^{t+1}) &- \phi^* \leq \phi(\mathbf{p}^t) - \phi^* - \epsilon(1-\epsilon L/2)\lVert\nabla\phi(\mathbf{p}^t)\rVert^2
+            \\&\leq 
+            \phi(\mathbf{p}^t) - \phi^* - \epsilon(1-\epsilon L/2)
+            \frac{(\phi(\mathbf{p}^t) - \phi^*)^2}{\lVert\mathbf{p}^0-\mathbf{p}^*\rVert^2},
+        \end{split}
+        \end{equation}
+        where the second inequality utilized Equation~(\ref{eqn:convex_proof_bound}) again. Denoting $\Delta^t\defeq\phi(\mathbf{p}^t) - \phi^*$, we find
+        \begin{equation}\small
+            \frac{1}{\Delta^{t+1}} \geq \frac{1}{\Delta^{t}}+\frac{\Delta^{t}}{\Delta^{t+1}} \frac{\epsilon(1-\epsilon L/2)}{\lVert \mathbf{p}^0 - \mathbf{p}^*\rVert^2} \geq \frac{1}{\Delta^{t}}+ \frac{\epsilon(1-\epsilon L/2)}{\lVert \mathbf{p}^0 - \mathbf{p}^*\rVert^2}.
+        \end{equation}
+        Summing up the inequalities starting from $t=0$, we find $\frac{1}{\Delta^{t+1}} \geq \frac{1}{\Delta^{0}}+(t+1)\frac{\epsilon(1-\epsilon L/2)}{\lVert \mathbf{p}^0 - \mathbf{p}^*\rVert^2}$. Thus,
+        \begin{equation}\small
+            \lim_{t\rightarrow \infty} \phi(\mathbf{p}^t) - \phi^*=0
+        \end{equation}
+        The theorem follows.
+    \end{proof}
+    }
+\end{theorem}
+
+\begin{proposition}
+\label{prop:pruning_approx}
+    The pruning schemes \homos and \heters aim to effectively approximate equilibrium breeding utility. The inequality: \(\frac{\sum_{\eta_j \in \mathcal{L}} V(\eta_j)}{\sum_{\eta_j \in \mathcal{M}} V(\eta_j)} \leq \left( \frac{K_c}{M} \right)^{1 - 1/\alpha} \) holds, where \( K_c = |\mathcal{L}| \) and \( M = |\mathcal{M}| \)\inshort{ (proof in ~\cite{supplementary})}.
+    \inlong{
+    \begin{proof}
+        % Let $b_i$ be a buyer and $M$ be the set of all possible NFTs. The optimal breeding utility $U_i^\ast $ is achieved by exhaustively searching all possible combinations of parent NFTs from $M$. However, this exhaustive search is computationally infeasible due to the combinatorial explosion as the size of $M$ increases.
+
+% To make the computation tractable, the pruning approaches OPPS and HPSS reduce the search space by selecting a candidate set $C$ of promising parent NFTs. Specifically, we focus on the top $K_c$ NFTs according to certain ranking criteria relevant to the buyer's preferences. We aim to show that the breeding utility $U_i^{approx}$ obtained from this pruned set $C$ closely approximates the optimal breeding utility $U_i^\ast$, and derive an explicit connection between the size $K_c$ and the approximation error $\epsilon$ by assuming a standard long-tail distribution.
+
+
+First, to model the typically long-tail distribution of breeding utility contributions, we assume that the amalgamated values $\Tilde{V}^i(\eta)$ of NFTs for the buyer $b_i$ follow a Pareto distribution with sharpness $\alpha$~\cite{reed2001pareto}, a common model for long-tail distributions~\cite{zolaktaf2018generic}. The Pareto distribution is defined by the PDF as follows.
+\begin{equation}\small
+    f(v) = \frac{\alpha v_m^\alpha}{v^{\alpha + 1}}, \quad v \geq v_m,
+\end{equation}
+where $\alpha > 0$ is the shape parameter, and $v_m > 0 $ is the minimum possible value of $\Tilde{V}^i(\eta)$. The CDF becomes, 
+\begin{equation}\small
+    F(v) = 1 - \left( \frac{v_m}{v} \right)^\alpha.
+\end{equation}
+
+The expected value exists only if $\alpha > 1$, i.e., long tail, and is given by
+\begin{equation}\small
+    \mathbb{E}[\Tilde{V}^i] = \frac{\alpha v_m}{\alpha - 1}.
+\end{equation}
+
+Since we rank the NFTs in $\mathcal{M}$ in decreasing order of their values, we have
+\begin{equation}\small
+    \Tilde{V}^i(\eta_1) \geq \Tilde{V}^i(\eta_2) \geq \dots \geq \Tilde{V}^i(\eta_{|M|})
+\end{equation}
+Our goal is to find how much of the total value is captured by the top $K_c$ NFTs and how the approximation error $\epsilon$ depends on $K_c$. Using the Pareto distribution, the $j$-th largest value $\Tilde{V}^i(\eta_j)$ can be approximated using the order statistics of the distribution. The $j$-th order statistic for large $M$ is
+\begin{equation}\small
+    \Tilde{V}^i(\eta_j) \approx v_m \left( \frac{M}{j} \right)^{1/\alpha}.
+\end{equation}
+
+Then, the total value is
+\begin{equation}\small
+    S_{\text{total}} = \sum_{j=1}^{|M|} V_i(\eta_j) \approx \sum_{j=1}^{|M|} v_m \left( \frac{|M|}{j} \right)^{1/\alpha}.
+\end{equation}
+Similarly, the cumulative value of the top $K_c$ NFTs is 
+\begin{equation}\small
+    S_{K_c} = \sum_{j=1}^{K_c} V_i(\eta_j) \approx \sum_{j=1}^{K_c} v_m \left( \frac{|M|}{j} \right)^{1/\alpha}.
+\end{equation}
+
+For large $|M|$ and $K_c$, we can approximate the sums using integrals,
+\begin{align*}\small
+    S_{\text{total}} \approx & \int_{1}^{|M|} v_m \left( \frac{|M|}{x} \right)^{1/\alpha} dx  \\ = & v_m |M|^{1/\alpha} \int_{1}^{|M|} x^{-1/\alpha} dx \\ = & v_m |M|^{1/\alpha} \left( \frac{|M|^{1 - 1/\alpha} - 1}{1 - 1/\alpha} \right)
+    \\ = & v_m \frac{|M| - |M|^{1/\alpha}}{1 - 1/\alpha}.
+\end{align*}
+
+Similarity, 
+\begin{align*}\small
+    S_{K_c} \approx &  v_m |M|^{1/\alpha} \left[ \frac{x^{1 - 1/\alpha}}{1 - 1/\alpha} \right]_{x=1}^{x=K_c} \\ = &  v_m |M|^{1/\alpha} \left( \frac{K_c^{1 - 1/\alpha} - 1}{1 - 1/\alpha} \right).
+\end{align*}
+
+Therefore, the relative error becomes $\epsilon = \frac{S_{\text{total}} - S_{K_c}}{S_{\text{total}}}$, which can be derived as follows.
+\begin{equation}\small
+    \frac{S_{K_c}}{S_{\text{total}}} \approx \frac{v_m |M|^{1/\alpha} \left( \dfrac{K_c^{1 - 1/\alpha} - 1}{1 - 1/\alpha} \right)}{v_m \dfrac{|M| - |M|^{1/\alpha}}{1 - 1/\alpha}} = \frac{|M|^{1/\alpha} \left( K_c^{1 - 1/\alpha} - 1 \right)}{|M| - |M|^{1/\alpha}}.
+\end{equation}
+
+For large $|M|$, since $|M| \gg |M|^{1/\alpha}$, we have $|M| - |M|^{1/\alpha} \approx |M|$, and $ |M|^{1/\alpha} \left( K_c^{1 - 1/\alpha} - 1 \right) \approx |M|^{1/\alpha} K_c^{1 - 1/\alpha}$. Thus,
+\begin{equation}\small
+    \epsilon \approx 1 - \frac{|M|^{1/\alpha} K_c^{1 - 1/\alpha}}{|M|} = 1 - \frac{K_c^{1 - 1/\alpha}}{|M|^{1 - 1/\alpha}}.
+\end{equation}
+Since $|M|$ is large, $|M|^{1 - 1/\alpha}$ is large, and $\epsilon$ decreases as $K_c$ increases. 
+Finally, we have
+\begin{equation}\small
+    \epsilon \approx 1 - \left( \frac{K_c}{|M|} \right)^{1 - 1/\alpha},
+\end{equation}
+leading to the approximation ratio $1 - \epsilon \approx \left( \frac{K_c}{|M|} \right)^{1 - 1/\alpha}$.
+
+By selecting $K_c$ such that $K_c/|M|$ is a small fraction but $K_c$ is large enough, we can make $\epsilon$ arbitrarily small. Specifically, for a given $\delta > 0$, we can choose $K_c$ such that,
+\begin{equation}\small
+    \epsilon \leq \delta \quad \implies \quad \left( \frac{K_c}{|M|} \right)^{1 - 1/\alpha} \geq 1 - \delta.
+\end{equation}
+Solving for $K_c$,
+\begin{equation}\small
+    K_c \geq |M| (1 - \delta)^{\frac{\alpha}{\alpha - 1}}.
+\end{equation}
+Therefore, the pruning approaches \homos and \heters effectively approximate the optimal breeding utility by selecting the top $K_c$ NFTs, with the approximation error $\epsilon$. The proposition follows.
+
+
+    \end{proof}
+    }
+\end{proposition}
+
+
+\inlong{As will be shown in Section~\ref{subsec:exp-main}, \method converges quickly due to 1) the design of the demand-aware step-size scheduling, which adapts to the magnitude of the excess demand (Equation~(\ref{eqn:ba-stepsize})), 2) the design of \textsc{init} for the pricing vector that provides a favorable starting point, and 3) the designs of \homos and \heters. To improve computational efficiency, our pruning schemes \homos and \heters prioritize the most promising parent breeding combinations into a smaller, more manageable set $\mathcal{L}$. This effectively trims the search space from the full candidate pool $\mathcal{M}$ by omitting combinations anticipated to yield lower breeding utility.} 
+\inshort{To enhance computational efficiency, our pruning schemes \homos and \heters prioritize promising parent breeding combinations into a smaller set $\mathcal{L}$, effectively trimming less valuable options from the full candidate pool $\mathcal{M}$.}
+Proposition~\ref{prop:pruning_approx} then quantifies the quality of this approximation for the breeding utility calculated in each iteration. Despite relying on this bounded, step-wise approximation for breeding choices, \method ultimately converges to a competitive equilibrium (as proven in Theorem~\ref{thm:convergence}) because its gradient-based iterative updates consistently minimize the overall excess demand potential $\phi$ derived from these buyer decisions.
+\section{Experiments}
+\inshort{\begin{figure*}[t]
+  \centering
+  \includegraphics[width=.5\textwidth]{plots/1_main/zlegend.jpg}\\
+  \subfloat[\textit{Axie Infinity}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_axiesinfinity.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_axiesinfinity.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_axiesinfinity.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Bored Ape Yacht Club}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_boredapeyachtclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_boredapeyachtclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_boredapeyachtclub.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Crypto Kitties}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_cryptokitties.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_cryptokitties.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_cryptokitties.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Fat Ape Club}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_fatapeclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_fatapeclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_fatapeclub.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Roaring Leader}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_roaringleader.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_roaringleader.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_roaringleader.jpg}
+    \end{minipage}%
+  }
+  \caption{Seller's revenue (top row), average buyers' utility (middle row), and runtime (bottom row) comparisons.}
+  \label{fig:barplot-all}
+  \inshort{\vspace{-4mm}}
+\end{figure*}
+
+}
+
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+% SHORT SETUP
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+
+\inshort{
+    We experiment with five real-world NFT projects on the Ethereum blockchain, including \textit{i) Axie Infinity}~\cite{axieinfinity} ($5515$ buyers and $26739$ NFTs), \textit{ii) Bored Ape Yacht Club (BAYC)}~\cite{bayc} ($4483$ buyers and $8141$ NFTs), \textit{iii) Crypto Kitties}~\cite{cryptokitties} ($1869$ buyers and $5984$ NFTs), \textit{iv) Fat Ape Club}~\cite{fatape} ($4540$ buyers and $5189$ NFTs), and \textit{v) Roaring Leaders}~\cite{roaringleader} ($2407$ buyers and $4962$ NFTs). These project, with trait systems and trade records up to November 17, 2023, are collected from OpenSea~\cite{opensea} using the Moralis Python SDK~\cite{moralis}. We leverage the trade records to assign buyers' budgets and preferences for each NFT project.
+
+    We compare \textsf{\method} against six baseline methods:\footnote{Following prior work on NFT pricing~\cite{xiong2023pricing}, the baselines (except \textsf{Auction}) set NFT prices proportional to their objective valuations. Please refer to~\cite{supplementary} for detailed implementation.} \textsf{HetRecSys}~\cite{yang2021consisrec, kang2025unbiased}, which models buyer-buyer, buyer-NFT, and NFT-NFT interactions; \textsf{LightGCN}~\cite{he2020lightgcn, lee2024revisiting}, which processes buyer-item interactions; \textsf{NCF}~\cite{he2017neural}, which learns buyer and item embeddings;\footnote{Following~\cite{yang2021consisrec}, all interactions and training data are prepared based on similarities between buyer preferences and NFT attributes.} \textsf{Group}~\cite{guo2020group, zhou2024dual}, which recommends the same set of NFTs to groups of buyers (grouped by preferences); \textsf{Auction}~\cite{garg2004auction}, which leverages a bidding process; \textsf{Greedy}, which recommends NFTs with the highest value-to-price ratio (i.e., ``\textit{bang per buck}''~\cite{devanur2008market}) for each buyer.
+
+    Each buyer is randomly set as a niche or eclectic collector for \heterb. For \method, we set all iteration numbers ($K, K_{init}, K_{d})$ to $128$, (initial) step size $\epsilon=1000, \epsilon_s=1$, candidate length $K_C=50$, mutation rate $r=0.03$, breeding count $k=10$. All experiments are conducted on an HP DL$580$ server with an Intel $2.10$GHz CPU, $1$TB RAM, and NVIDIA RTX $2070$ GPU.\footnote{We present the sensitivity tests in~\cite{supplementary} to analyze \method's performance over a varied number of buyers, buyer budgets, and number of NFTs.}
+}
+
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+% LONG SETUP
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+\inlong{
+\subsection{Setup}
+\begin{table}[t]    
+    \caption{Dataset Statistics. $N$ denotes the number of buyers, $M$ denotes the number of NFT instances, `\# asset' denotes the number of NFT assets, `\# attr.' denotes the number of attributes, and `\# trade' denotes the number of transactions.}
+    \label{tab:stats}
+    \centering
+    \begin{tabular}{lccccc}
+    \toprule
+    NFT project & N & M & \# asset & \# attr. & \# trade  \\
+    \midrule
+    \textit{Axies Infinity}	&$5515$	&$26739$	&$203954$	&$288$	&$35217$\\
+    \textit{Bored Ape Yacht Club}	&$4483$	&$8141$	&$8141$	&$308$	&$21560$\\
+    \textit{Crypto Kitties}	&$1869$	&$5984$	&$8465$	&$224$	&$7534$\\
+    \textit{Fat Ape Club}	&$4540$	&$5189$	&$5189$	&$228$	&$7726$\\
+    \textit{Roaring Leader}	&$2407$	&$4962$	&$4962$	&$539$	&$7358$\\
+    \bottomrule
+    \end{tabular}
+\end{table} 
+
+
+
+\paragraph{Dataset} Table~\ref{tab:stats} summarizes the statistics of five real-world NFT projects on the Ethereum blockchain. Each project's trait systems and trade records, up to November 17, 2023, are collected from OpenSea~\cite{opensea} using the Moralis Python SDK~\cite{moralis}. 
+    
+\begin{itemize}
+    \item \textit{Axie Infinity}~\cite{axieinfinity} employs its NFT assets as characters and uses breeding to generate new characters.
+    \item \textit{Bored Ape Yacht Club (BAYC)}~\cite{bayc}, featuring unique Bored Ape visual designs (see Fig.~\ref{fig:bayc-example}), is one of the most popular NFT projects. \bin{The Bored Ape NFTs also function as a virtual Yacht Club membership card.}
+    \item \textit{Crypto Kitties}~\cite{cryptokitties} is an NFT collection entertainment featuring cat designs that first introduces and encourages NFT breeding. It presents detailed and innovative breeding rules to encourage users to engage in the breeding process to obtain rare attributes.
+    \item \textit{Fat Ape Club}~\cite{fatape} features the \childb with the \textit{Fat Ape Babies Club}~\cite{fatapebabies} (see Fig.~\ref{fig:fat-example}). 
+    \item \textit{Roaring Leaders}~\cite{roaringleader} is an NFT project featuring NFT breedings for fantasy feline arts.
+\end{itemize}
+
+\begin{figure}
+    \centering    
+    \includegraphics[width=.45\linewidth]{imgs/fatape4360.jpg}
+    \includegraphics[width=.45\linewidth]{imgs/fatapebaby2085.jpg}
+    \caption{
+    \textit{Fat Ape Club} NFT $\#4360$ and \textit{Fat Ape Babies Club} NFT $\#2085$ both have the ``Laser'' attribute for the ``Eyes'' trait, but features distinct designs. Under \homob, the child NFT would continue to feature the same ``Laser'' design on the left. In contrast, with \childb, the child NFT would feature the new design on the right.}
+    \label{fig:fat-example}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=.5\textwidth]{plots/1_main/zlegend.jpg}\\
+  \subfloat[\textit{Axie Infinity}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_axiesinfinity.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_axiesinfinity.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_axiesinfinity.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Bored Ape Yacht Club}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_boredapeyachtclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_boredapeyachtclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_boredapeyachtclub.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Crypto Kitties}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_cryptokitties.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_cryptokitties.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_cryptokitties.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Fat Ape Club}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_fatapeclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_fatapeclub.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_fatapeclub.jpg}
+    \end{minipage}%
+  }
+  \hfill
+  \subfloat[\textit{Roaring Leader}]{%
+    \begin{minipage}{0.19\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{plots/1_main/revenue_roaringleader.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/buyer_utility_roaringleader.jpg}\\
+      \includegraphics[width=\linewidth]{plots/1_main/runtime_roaringleader.jpg}
+    \end{minipage}%
+  }
+  \caption{Seller's revenue (top row), average buyers' utility (middle row), and runtime (bottom row) comparisons.}
+  \label{fig:barplot-all}
+  \inshort{\vspace{-4mm}}
+\end{figure*}
+
+
+
+We document each NFT project's trait system and compile the attribute composition of each NFT instance within the project. For \textit{Axie Infinity}, \textit{Crypto Kitties} and \textit{Roaring Leaders}, we focus on the appearance traits (\eg, ears, mouth, tail) and filter out the entertainment traits (\eg, speed or attack) that have a continuous range of selections for attributes. For \textit{Bored Ape Yacht Club} and \textit{Fat Ape Club}, we directly use the traits and attributes designed for the trait system. For \heterb, we equally split the buyers between niche and eclectic collectors, and assign NFT instances to one of three trait divisions and one of three attribute classes according to~\cite{pann}.
+
+Note that we identify buyers by their blockchain addresses, filter out those with five or fewer NFT purchases, and exclude NFT instances without a trading history~\cite{yang2021consisrec, yeh2023planning}. The budget is calculated by summing the transaction prices of a buyer's purchases, while preferences are mined using \cite{kang2019recommender} based on the traits in the acquired NFTs.
+
+\paragraph{Baseline} We compare \textsf{\method} with the following baseline recommendation methods.
+
+\textsf{HetRecSys}~\cite{yang2021consisrec, kang2025unbiased}, \textsf{LightGCN}~\cite{he2020lightgcn, lee2024revisiting}, \textsf{NCF}~\cite{he2017neural}, \textsf{Group}~\cite{guo2020group, zhou2024dual}, \textsf{Auction}~\cite{garg2004auction}, and \textsf{Greedy}
+\begin{itemize}
+    \item \textsf{HetRecSys}~\cite{yang2021consisrec} 
+    leverages a Heterogeneous Graph Neural Network (GNN) to learn a heterogeneous graph of user preferences (user-item interactions), social networks (user-user interactions, and item graph (item-item interactions). 
+    \item \textsf{LightGCN}~\cite{he2020lightgcn} leverages a lightweight Graph Convolutional Network (GCN) to model the user-item interactions.
+    \item \textsf{NCF}~\cite{he2017neural} leverages fully connected layers to jointly process user and item embeddings and directly output a prediction score.
+    \textsf{Group}~\cite{guo2020group} recommends the same set of items to a group of users by reaching a consensus while considering the preference of each user. 
+    \item \textsf{Auction}~\cite{garg2004auction} simulates an auction where buyers bid on NFTs based on utility-to-price ratio. A dual-price system sets a price range, and in each round, a buyer bids on the NFT offering the best value. The process escalates prices for lower-priced NFTs, optimizing pricing recommendations for sellers.
+    \item \textsf{Greedy} recommends NFTs with the highest value-to-price ratio (i.e., ``\textit{bang per buck}''~\cite{devanur2008market}) with the amalgamated valuation for each buyer.
+\end{itemize} 
+
+Besides \textsf{Auction}, we adapt baseline approaches for \problem to recommend prices and quantities. Following~\cite{xiong2023pricing}, we implement a default pricing strategy where each NFT's price is set proportionally to its objective valuation. For purchasing, we select the top-$k$ ($k=20$) items from baseline recommendations and optimize a uniform quantity across all selected items, subject to buyers' budget constraints. It is worth noting that this implementation enhances the baseline methods by extending their item ranking recommendations with optimized purchasing quantities. For \textsf{HetRecSys}, \textsf{LightGCN}, and \textsf{NCF}, we model buyers as users and NFTs as items, forming the user-user, user-item, and item-item interactions based on similarities between buyer preferences and NFT attributes. We customize \textsf{Group} by grouping buyers based on preference similarity. 
+
+
+\paragraph{Evaluation and Parameter Settings}
+While the baselines do not account for breeding in their recommendations, we rigorously evaluate all methods under \homob, \childb, and \heterb separately. Specifically, based on the pricing and purchasing recommendations from each method, buyers are randomly sequenced to complete their purchases while adhering to both the NFT supply constraints and individual buyer budgets.
+
+For each buyer, we first verify if the supply limit has been exceeded. For NFTs that are sold out, we mask them and ignore their recommendations, adjusting the buyer’s recommendations to align with the remaining supply if necessary. Next, if the total cost of the recommended purchases exceeds the buyer’s budget, we uniformly scale down the purchasing quantities to fit within the budget. After satisfying both constraints, the transaction is completed, and we record the revenue and buyer utility based on the adjusted quantities.
+
+
+For \heterb, each NFT instance is designated to a trait division and a attribute class following a uniform distribution, and each buyer is randomly set as a niche collector or an eclectic collector. For \method, we set all iteration numbers ($K, K_{init}, K_{d})$ to $128$, (initial) step size $\epsilon=1000, \epsilon_s=1$, candidate length $K_C=50$, mutation rate $r=0.03$, breeding count $k=10$. All experiments are conducted on an HP DL$580$ server with an Intel $2.10$GHz CPU, $1$TB RAM, and NVIDIA RTX $2070$ GPU.
+}
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+% LONG SETUP
+% %%%%%% %%%%%% %%%%%% %%%%%% %%%%%
+
+
+\begin{figure*}[t!]
+    \centering
+    \begin{minipage}[t]{.48\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/2_scale/yelp/zlegend.jpg}\\
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/revenue_yelp.jpg}
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/buyer_utility_yelp.jpg}
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/runtime_yelp.jpg}
+    \caption{Seller's revenue (left), average buyers' utility (middle), and runtime (right) on the Yelp dataset.}
+    \label{fig:yelp-results}
+\end{minipage}
+    \hfill
+    \begin{minipage}[t]{.48\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/2_scale/large/zlegend.jpg}\\
+    \hfill
+    \includegraphics[width=0.45\linewidth]{plots/2_scale/large/revenue_fatapeclub_Heterogeneous.jpg}
+    \quad
+    \includegraphics[width=0.45\linewidth]{plots/2_scale/large/runtime_fatapeclub_Heterogeneous.jpg}
+    \hfill
+    \vspace{-2mm}
+    \caption{Scalability test on large number of buyers.}
+    \label{fig:scale}
+\end{minipage}
+    \vspace{-2mm}
+\end{figure*}
+
+\inbin{
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/2_scale/yelp/zlegend.jpg}\\
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/revenue_yelp.jpg}
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/buyer_utility_yelp.jpg}
+    \includegraphics[width=0.32\linewidth]{plots/2_scale/yelp/runtime_yelp.jpg}
+    \caption{Seller's revenue (left), average buyers' utility (middle), and runtime (right) on the Yelp dataset.}
+    \label{fig:yelp-results}
+\end{figure}
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/2_scale/large/zlegend.jpg}\\
+    \hfill
+    \includegraphics[width=0.45\linewidth]{plots/2_scale/large/revenue_fatapeclub_Heterogeneous.jpg}
+    \quad
+    \includegraphics[width=0.45\linewidth]{plots/2_scale/large/runtime_fatapeclub_Heterogeneous.jpg}
+    \hfill
+    \caption{Scalability test on large number of buyers.}
+    \label{fig:scale}
+\end{figure}
+}
+\inshort{
+\begin{figure*}[ht]
+    \centering
+    \begin{minipage}[t]{.3\textwidth}
+        \centering
+        \includegraphics[width=.8\linewidth]{plots/3_ablation/legend_optimization.jpg}
+        \includegraphics[width=\linewidth]{plots/3_ablation/optimization.jpg}
+        \caption{Ablation tests over initial iteration steps.}
+        \label{fig:barplot-ablation-main}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{.3\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{plots/3_ablation/legend_schedule.jpg}
+        \includegraphics[width=\linewidth]{plots/3_ablation/schedule.jpg}
+        \caption{Ablation tests on step-size scheduling.}
+        \label{fig:ablation-schedule}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{plots/3_ablation/legend_module.jpg}
+        \includegraphics[width=\linewidth]{plots/3_ablation/module.jpg}
+        \caption{Ablation tests on candidate sampling.}
+        \label{fig:ablation-module}
+    \end{minipage}
+    \vspace{-4mm}
+\end{figure*}
+}
+\inlong{
+    \begin{figure}[t]
+        \centering
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/legend_optimization.jpg}
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/optimization.jpg}
+        \caption{Ablation tests over initial iteration steps.}
+        \label{fig:barplot-ablation-main}
+    \end{figure}
+    % \hfill
+    \begin{figure}[t]
+        \centering
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/legend_schedule.jpg}
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/schedule.jpg}
+        \caption{Step-size scheduling comparison over initial steps.}
+        \label{fig:ablation-schedule}
+    \end{figure}
+    % \hfill
+    \begin{figure}[t!]
+        \centering
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/legend_module.jpg}
+        \includegraphics[width=.7\linewidth]{plots/3_ablation/module.jpg}
+        \caption{Ablation tests replacing candidate sampling.}
+        \label{fig:ablation-module}
+    \end{figure}
+}
+
+\subsection{Experimental Results} % (RQ1)
+\label{subsec:exp-main}
+
+We compare the performance of revenue (top), average buyer utility (middle), and runtime (bottom) for the three breeding mechanisms in Fig.~\ref{fig:barplot-all}. Across all metrics, \method consistently demonstrates superior performance, achieving the highest seller revenues and the highest average buyer utility, while incurring a low runtime. This performance improvement is attributed to \method's joint optimization of pricing for the seller and customized NFT purchasing and breeding recommendations for individual buyers. By closely approximating competitive equilibrium, \method optimizes these outcomes for all stakeholders, including the seller and all buyers.
+
+\noindent\textbf{Revenue:} \method outperforms all baselines by a significant margin, iteratively optimizing pricing through \findprice to assign higher prices to in-demand NFTs. \textsf{LightGCN} often secures the second-best performance by modeling buyer preferences, enabling more precise identification of optimal purchases and reducing item collisions. However, it fails to account for breeding and cannot provide dynamic pricing based on buyer demands. \textsf{HetRecSys} generates less revenue compared to \method and \textsf{LightGCN}, as its overemphasis on buyer-buyer and NFT-NFT relations can obscure the direct individual demand signals vital for effective dynamic pricing. \textsf{NCF} performs the worst because it fails to account for the alignment between buyer preferences and NFT attributes. \textsf{Auction} exhibits unstable performance, as its bidding process forces buyers to exhaust their budgets to secure top choices, leading to erratic results. \textsf{Group} struggles by recommending the same NFTs to groups of buyers, increasing the likelihood of popular NFTs being sold out and missing revenue opportunities. Lastly, \textsf{Greedy} performs variably, depending on the concentration of buyer preferences, as it greedily exploits the amalgamated valuation to provide recommendations.
+
+\noindent\textbf{Utility:} \inlong{For buyer utility, }\method consistently delivers superior results. Most baselines stagnate at the initial utility, equivalent to the initial buyer budgets (captured as the unspent budget utility $R$ in Definition~\ref{def:buyer-utility}). This stagnation indicates baselines' failure to identify NFT purchasing opportunities where the utility gained from NFTs (comprised of $U_\textit{Instance}$, $U_\textit{Collection}$, and $U_\textit{Breeding}$ (Definition~\ref{def:buyer-utility})) exceeds the cost of the NFTs (which reduces $R$). In contrast, \method excels by carefully estimating the NFT breeding utilities while calculating buyer-specific $U_\textit{Collection}$ and objective $U_\textit{Instance}$, allowing for effective evaluation of purchasing each NFT instance. Furthermore, while \method dynamically adjusts NFT prices based on demand, it also optimizes every buyer's purchasing based on the updated price and additional breeding utilities, resulting in the most advantageous options for buyers, leading to substantial improvement in buyer utilities. When comparing different breeding mechanisms, \method generally achieves lower utility with \homob than with \childb due to the population factor $f_{pop}$, which reflects market saturation. Besides, \method attains higher utility with \heterb for NFT projects with a larger number of NFT instances (\textit{Axie Infinity} and \textit{Bored Ape Yacht Club}) since it provides more options for buyers to choose the best parent sets. Additionally, \method demonstrates greater performance gains in \textit{Axie Infinity}, which has a larger number of buyers and NFTs, necessitating equilibrium between pricing and purchasing recommendations. In contrast, \method's advantage over baselines is less significant in \textit{CryptoKitties}, which has fewer buyers and a simpler market structure.
+
+\noindent\textbf{Runtime:} \method achieves a balanced runtime, outperforming computationally expensive methods such as \textsf{HetRecSys}, \textsf{NCF}, and \textsf{Auction}, which require extensive training, inference, or prolonged bidding processes. While \textsf{LightGCN} occasionally demonstrates lower runtimes, it falls short of delivering high-quality recommendations for both buyers and sellers. \textsf{Group} benefits from lower runtimes due to its group-based recommendation strategy, and \textsf{Greedy} achieves the lowest runtimes because of its simplistic design, which comes at the expense of suboptimal results. When comparing breeding mechanisms, \method shows a slightly higher runtime in \homob due to the additional computational cost for deriving the population factor $f_{pop}$. While \heterb involves combinations of more than three parent NFTs, \heters accelerates the computation of the breeding utility, allowing \method to maintain a low runtime. Consistent with the predictions of Theorem~\ref{thm:time-complexity}, runtimes scale linearly with the size of the NFT project. 
+% More results in terms of the runtime is presented in the scalability (Fig.~\todo{todo}) and sensitivity (Fig.~\todo{todo}) tests to be shown next.
+
+\subsection{Scalability Tests}
+\label{subsec:scale}
+We conduct scalability tests on 1) a real-world Yelp review dataset with $16045$ users and $38031$ items~\cite{yelp_dataset} and 2) a large-scale synthetic dataset prepared by duplicating the number of buyers ranging from $10,000$ to $100,000$ for \textit{Fat Ape Club}.\inshort{\footnote{Please see~\cite{supplementary} for details on the implementation. Note that \textsf{Auction} is unsuitable for large-scale settings due to its combinatorial process of bidding across all buyers and all NFTs~\cite{garg2004auction}. Besides, we reduce the number of training epochs for \textsf{NCF}, \textsf{LightGCN}, and \textsf{HetRecSys}.}}
+
+
+
+\inshort{First, to investigate the broader applicability of our proposed \method, we adopt the Yelp dataset~\cite{yelp_dataset} for the \problem problem to simulate an NFT project within a conventional eCommerce context (see~\cite{supplementary} for details). The dataset comprises $16045$ users as buyers and $38031$ businesses as NFT instances. As shown in Fig.~\ref{fig:yelp-results}, \method consistently outperforms all baselines in all cases, demonstrating its applicability to larger NFT projects with rich attributes. This superior performance is attributed to \method's iterative price optimization approach, which effectively captures and responds to demand dynamics even in a diverse business landscape.}
+
+\inlong{
+    First, we investigate the broader applicability of our proposed \method. This experiment aims to (1) assess \method's effectiveness in conventional scenarios and (2) explore the feasibility of treating real-world entities as NFTs. In particular, we adapt the Yelp dataset~\cite{yelp_dataset} for the \problem problem to simulate an NFT project within a conventional eCommerce context.\footnote{We select the Yelp dataset~\cite{yelp_dataset} due to its size as well as rich business information and user reviews, which allow for a compelling simulation of NFT attributes and buyer preferences.}
+    
+    Leveraging Yelp's extensive business attribute information, we filter ``Restaurant'' businesses and process their attributes. Based on the distribution of the data, we construct an NFT-like trait system, mimicking the attribute structure of NFT projects with five traits, including 1) ``State,'' with attributes ``PA," ``FL," ``TN," ``MO," ``IN," and ``Other," 2) ``Stars," with attributes ``5.0," ``4.5," ``4.0," ``3.5," ``3.0," and ``Other," 3) ``Payment," with attributes ``Both," ``Bitcoin," ``CreditCards," and ``None," 4) ``ToGo," with attributes ``Both," ``TakeOut," ``Delivery," and ``None," 5) ``GoodFor" with attributes ``Both," ``Kids," ``Meal," and ``None." User reviews are analyzed to infer buyer preferences, while buyer budgets are assigned based on the number of reviews, which serves as a proxy of platform engagement; the supply count is set to $1$ for all NFT instances. The final dataset comprises $16045$ users as buyers and $38031$ businesses as NFT instances. We employ the same baseline methods, breeding scenarios, and parameters for \method as the primary experiment above (Fig.~\ref{fig:barplot-all}).
+    
+    Fig.~\ref{fig:yelp-results} presents the comparison of seller's revenue, average buyers' utility, and runtime across different methods and breeding mechanisms applied to the Yelp dataset. As shown in Fig.~\ref{fig:yelp-results}, \method consistently outperforms all baselines in all cases, demonstrating its applicability to larger NFT projects with rich attributes. This superior performance can be attributed to \method's iterative price optimization approach, which effectively captures and responds to demand dynamics even in a diverse business landscape.
+    
+    } 
+
+Second, we evaluate the scalability of \method to a larger number of buyers.
+Fig.~\ref{fig:scale} presents a scalability test using synthetic data with the number of buyers $N$ ranging from $10,000$ to $100,000$ and~\cite{bendre2018towards}\inshort{ detailed in~\cite{supplementary}}. \inlong{Specifically, the number of NFT instances fixed at $M = 5,000$, the preferences and budget of buyers are randomly set and the breeding mechanism is set to \childb.} As shown in Fig.~\ref{fig:scale}, \textsf{\method} consistently outperforms all baseline methods in terms of the seller's revenue while maintaining a low runtime in all large-scale settings, linearly increasing with the number of buyers.  
+
+
+
+
+\subsection{Ablation Tests}
+\label{subsec:ablation_tests}
+We conduct ablation tests on \textit{Fat Ape Club} to reveal the importance of different designs in \method. First, we contrast the equilibrium process in \textsf{\method} against the preference-aware pricing initialization \textsc{init} (see Algorithm~\ref{alg:method}). Fig.~\ref{fig:barplot-ablation-main} compares \textsf{\method} under \homob with two ablation variants after running for a fixed number of initial iteration steps: i) $\textsf{\method}_{\textsf{no init}}$, which eliminates the \textsc{init} initialization, and ii) \textsc{init}, which directly uses the pricing obtained by \textsc{init} without jointly refining the pricing and purchasing recommendation towards equilibrium. Comparing \textsf{\method} with $\textsf{\method}_{\textsf{no init}}$, the results show that while \textsc{init} helps \textsf{\method} by accelerating the optimization process, the equilibrium process contributes more significantly to \textsf{\method}'s success in attaining optimal results (Proposition~\ref{prop:equilibrium}). 
+
+Second, we investigate the effectiveness of \textit{demand-aware scheduling} for the pricing recommendation by comparing the attained revenue after running for a fixed number of initial iteration steps under \homob. Fig.~\ref{fig:ablation-schedule} compares \textsf{\method} with: i) $\textsf{\method}_{\textsf{fixed}}$, which adopts a fixed decay rate for the step size, and ii) $\textsf{\method}_{\textsf{none}}$, which does not adjust initial step size\bin{(obtained through a hyperparameter grid search)}. The results demonstrate that the demand-aware scheduling in \findprice assists \textsc{\method} in achieving the highest revenue, as it effectively adjusts the step sizes based on excess demand to accelerate convergence. Note that similar trends are also observed under \childb and \heterb. 
+% This contrast is prominent in \homob, where the optimization process is more challenging due to the population factor $f_{pop}$.
+
+ % (Equation~\ref{eqn:instance-utility})
+Besides, we evaluate the impact of candidate selection $\mathcal{L}$ obtained by \homos and \heters in \finddemand for the purchasing recommendation under all three breeding mechanisms. Fig.~\ref{fig:ablation-module} compares \textsf{\method} with two variants: i) $\textsf{\method}_{\textsf{objective}}$, which selects the NFT $\eta$ with the highest $V(\eta)$, and ii) $\textsf{\method}_{\textsf{random}}$, which selects random candidates\bin{ for $\mathcal{L}$}. As shown, personalization achieved by\bin{sampling candidates with} the amalgamated valuation $\Tilde{V}$ significantly outperforms other approaches in terms of average buyer utility across all breedings, while the contrast between \textsf{\method} and $\textsf{\method}_{\textsf{random}}$ clearly indicates the efficacy of both \homos and \heters.
+
+
+\inlong{
+
+Lastly, we increase the size of the candidate list $|\mathcal{L}|$ for \homos (with \childb) and \heters to evaluate the performance of \method. For \homos, the size of the candidate set $|\mathcal{C}| \propto |\mathcal{L}|^2$, while for \heters, $|\mathcal{C}| \propto |\mathcal{L}|^D$ ($D = 3$ in our experiments). As shown in Fig.~\ref{fig:candidate}, while the runtime increases quadratically for \homos and even more steeply for \heters\inlong{, exhibiting cubic growth}, the revenue only marginally improves. This is because the candidate parent sets are sorted in \method, ensuring that the optimal selection for parent sets is effectively captured even in the pruned sets derived by \homos and \heters.
+
+
+\begin{figure}
+    \centering
+    \subfloat[\homos]{%
+        \begin{minipage}{0.47\linewidth}
+            \centering
+            \includegraphics[width=.9\linewidth]{plots/2_scale/candidate/ChildProject.jpg}
+        \end{minipage}%
+    }
+    \hfill % Use \hfill or \quad for spacing if needed. \hfill will push them apart.
+    \subfloat[\heters]{%
+        \begin{minipage}{0.47\linewidth}
+            \centering
+            \includegraphics[width=.9\linewidth]{plots/2_scale/candidate/Heterogeneous.jpg}
+        \end{minipage}%
+    }
+    \caption{Comparing revenue and runtime performance of \method on different sizes of the candidate list $|\mathcal{L}|$.}
+    \label{fig:candidate}
+\end{figure}
+
+
+\subsection{Qualitative Tests}
+ 
+\begin{figure}
+    \centering
+    \subfloat[BAYC]{%
+        \begin{minipage}{0.32\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{plots/equi/BoredApeYachtClub.jpg}
+        \end{minipage}%
+    }
+    \hfill
+    \subfloat[Fat Ape Club]{%
+        \begin{minipage}{0.32\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{plots/equi/FatApeClub.jpg}
+        \end{minipage}%
+    }
+    \hfill
+    \subfloat[Roaring Leader]{%
+        \begin{minipage}{0.32\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{plots/equi/RoaringLeader.jpg}
+        \end{minipage}%
+    }
+    \caption{Comparing total excess demand ($\lVert\mathbf{z}\rVert_2$) to the deviation level from the optimal pricing given by \textsf{\method}.}
+    \label{fig:pricing-v-demand}
+\end{figure}
+
+We analyze whether \method attains the market-clearing condition required by the competitive equilibrium. In particular, the pricing recommended by \textsf{\method} is uniformly adjusted by a certain percentage (termed the Deviation Level) up to $\pm10\%$, and the total excess demand, which corresponds to the degree of difference between supply and demand, is subsequently measured under the new price using the buyer purchasing recommendations obtained through solving \finddemand in the new price to estimate aggregate demand. The latter is quantified as the $\ell_2$ norm of the excess demand vector $\lVert\mathbf{z}\rVert_2$. Fig.~\ref{fig:pricing-v-demand} compares the total excess demand under varied Deviation Levels (from $-10\%$ to $+10\%$). As shown in Fig.~\ref{fig:pricing-v-demand}\inlong{\xspace for \textit{Bored Ape Yacht Club (BAYC)}, \textit{Fat Ape Club}, and \textit{Roaring Leader}, respectively}, the total excess demand reaches its minimum when the deviation level is precisely $0$. This minimum point of excess demand signifies the closest approximation to market-clearing conditions, where supply and demand are most balanced. The outcome strongly supports the capability of \textsf{\method} to accurately achieve the equilibrium for \problem, effectively maximize seller revenue, and recommend appropriate NFTs to buyers for breeding. 
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/5_sensitivity/zlegend.jpg}\\
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/item_fatapeclub_ChildProject_rev.jpg}
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/item_fatapeclub_ChildProject_time.jpg}
+    \caption{Sensitivity tests on the number of NFTs.}
+    \label{fig:sensitivity-num_items}
+\end{figure}
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/5_sensitivity/zlegend.jpg}\\
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/num_fatapeclub_ChildProject_rev.jpg}
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/num_fatapeclub_ChildProject_time.jpg}
+    \caption{Sensitivity tests on the number of buyers.}
+    \label{fig:sensitivity-num_buyers}
+\end{figure}
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=.9\linewidth]{plots/5_sensitivity/zlegend.jpg}\\
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/bud_fatapeclub_ChildProject_rev.jpg}
+    \includegraphics[width=.45\linewidth]{plots/5_sensitivity/bud_fatapeclub_ChildProject_utils.jpg}
+    \caption{Sensitivity tests on the buyer budgets.}
+    \label{fig:sensitivity-budget}
+\end{figure}
+
+
+\subsection{Sensitivity Tests}
+
+We present sensitivity tests on the \textit{Fat Ape Club} dataset, focusing on the number of NFT instances, the number of buyers, and the (reduced) percentage of buyer budgets in \childb.\footnote{\textsf{Auction} is excluded from the sensitivity tests due to its prolonged runtime, which obscures the results of other methods, in addition to its poor performance.} 
+
+First, as shown in Fig.~\ref{fig:sensitivity-num_items}, \method consistently demonstrates superior revenue performance across varying numbers of NFTs while maintaining a low runtime. In general, runtime exhibits a linear trend relative to the number of NFTs, with \textsf{LightGCN}, \textsf{NCF}, and \textsf{HetRecSys} incurring constant overhead due to model preparation. Similarly, Fig.~\ref{fig:sensitivity-num_buyers} reflects comparable trends, where \method continues to outperform in revenue generation among different numbers of buyers while maintaining efficient runtimes. These linear runtime trends align with the predictions of Theorem~\ref{thm:time-complexity}. 
+
+Finally, as shown in Fig.~\ref{fig:sensitivity-budget}, we analyze the effect of varying buyer budgets by scaling them to different proportions of their original values (i.e., from $10\%$, $20\%, \ldots$, to $100\%$). Under these changing budget conditions, \method consistently maintains its leading performance in both revenue and buyer utility. This indicates that as buyers become more or less constrained in their spending, \method can still effectively match supply and demand, approaching market equilibrium. In other words, \method is resilient to changes in buyer purchasing power and continues to deliver the best outcomes even when the overall budget landscape fluctuates.
+}
+
+
+\inlong{
+\subsection{Case Studies}
+
+\begin{figure}[t]
+    \centering
+    \subfloat[\homob vs \childb pricing\label{subfig:homo-child}]{%
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{plots/4_case/pri_homo_v_child.jpg}
+        \end{minipage}%
+    }
+    \hfill
+    \subfloat[Breeding recommendation for niche vs eclectic collector\label{subfig:heter}]{%
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{plots/4_case/pri_niche_v_eclectic.jpg}
+        \end{minipage}%
+    }
+    \caption{Case study comparing optimal pricing and NFT breeding recommendation from \method.}
+    \label{fig:case}
+\end{figure}
+We study how breeding and buyer types influence the pricing and purchasing recommendations of \textsf{\method} in the \textit{Fat Ape Club} dataset. First, we investigate how breeding influences pricing by dividing NFTs into $10$ equal-sized ``Rarity Groups'' ranked and categorized by their objective value $V(\eta_j)$ (Equation~(\ref{eqn:instance-utility})). Fig.~\ref{fig:case}(\subref{subfig:homo-child}) compares the average price of each group between \homob and \childb, yielding two observations: (1) there is a clear correlation between NFT rarity and its ideal pricing, and (2) \childb raises the prices more for the rare NFTs compared with \homob while reducing the prices for more common NFTs. For example, NFT $\#4360$ in the $10$th group has rare attributes such as ``Frosty'' for the ``background'' trait and ``Laser'' for the ``eyes'' trait, contributing to its value under both breeding mechanisms. However, under \homob, NFTs with ``Laser'' eye attribute are frequently recommended for breeding, leading to offspring oversupply and reducing the breeding utility through the population factor $f_{pop}$. In contrast, Child-project Breeding mitigates the market saturation with unique child NFT ``Laser'' eye designs\inlong{\xspace(see Fig.~\ref{fig:fat-example})}. Thus, its \method-recommended price is $12.45\%$ higher under \childb.
+
+Fig.~\ref{fig:case}(\subref{subfig:heter})  examines how buyer types (niche versus eclectic) affect breeding recommendations from \finddemand under \heterb. By increasing the objective value $V$ of NFTs in the ``Red'' attribute class by up to $50\%$ while keeping others (``Blue,'' ``Green,'' and ``Yellow'') the same, we analyze how value changes affect different buyer types' preferences for certain attribute classes, providing sellers valuable insights on buyer behavior. We examine the percentage of NFTs from this class included in buyers' top 10 recommended breeding parent sets, revealing distinct patterns between niche and eclectic collectors. In particular, breeding recommendations are evenly distributed across all attribute classes without any value boost. However, a $50\%$ value boost for the ``Red'' attribute class results in niche collectors strongly favoring this class, while eclectic collectors display a more moderate shift in preference. For instance, the top recommended parent set for buyer $\#829$, a niche collector, consists of all ``Blue'' NFTs based on his preferences. However, at a $50\%$ value boost for ``Red,'' the top candidate set becomes ``Red'' for the same buyer. In contrast, buyer $\#43$, an eclectic collector, is recommended parent sets consisting of all four attribute classes with or without the value boost due to his preference for diversity.
+}
+
+
+
+\section{Conclusion}
+\inshort{To our knowledge, this paper first studies the \problemfull (\problem) problem, highlighting challenges from its complex trait systems and diverse breeding mechanisms (Heterogeneous, Homogeneous, and Child-project). We propose \method (\methodfull) to address \problem, featuring iterative pricing (\findprice) and purchasing/breeding (\finddemand) components, with \finddemand's efficiency enhanced by \homos and \heters pruning schemes. Theoretical analyses confirm \problem's PPAD-complete hardness and \method's convergence to competitive equilibrium; experiments on five real-world NFT datasets demonstrate \method significantly improves seller revenue and buyer utility with low runtime compared to baselines. Future work will explore time and social influences on NFT price fluctuations.}
+\inlong{To the best of our knowledge, this paper is the first to study the \problemfull (\problem) problem, which is challenging due to the \emph{trait system} and the \emph{breeding mechanisms}, including Heterogeneous, Homogeneous, and \childb. We \inlong{prove the hardness of \problem and }design \method, a \methodfull method to tackle \problem, where \findprice and \finddemand iteratively update their recommendations for pricing and purchasing, respectively. Furthermore, \homos and \heters accelerate \finddemand by effectively trimming the candidate parent sets for breeding utility calculation. Theoretical analyses prove the hardness of \problem and the convergence of \method to a competitive equilibrium, while experiments on five real-world NFT project data demonstrate the effectiveness of \method in generating more revenue for the seller and higher average utility for the buyers while maintaining \inlong{high efficiency (with a low runtime) compared to the baseline methods}\inshort{a low runtime}. In our future work, we plan to study the impact of time and social influences on the price fluctuations of NFTs.}
+
+
+
+
+\bibliographystyle{IEEEtran}
+\inshort{
+\bibliography{IEEEabrv, ref}
+}
+\inlong{
+\bibliography{oldref}
+}
+
+
+\end{document}
+
+
