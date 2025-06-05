@@ -16,7 +16,6 @@ def extract_macros(source: str) -> List[MacroSpec]:
         macros.append(MacroSpec(name, '{' * n_args))
     return macros
 
-
 def _parse_macro_definitions(source: str) -> Tuple[str, Dict[str, Tuple[int, str]]]:
     """Remove \newcommand definitions and return remaining source and macros."""
     macros: Dict[str, Tuple[int, str]] = {}

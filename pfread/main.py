@@ -1,9 +1,7 @@
 import argparse
 from pathlib import Path
 import tempfile
-
 from pylatexenc.latexwalker import LatexWalker
-
 from pfread.parser.latex_flatten import flatten_tex
 from pfread.parser.macro_parser import extract_macros, replace_newcommands
 from pfread.analysis.grammar_check import check_text

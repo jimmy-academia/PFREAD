@@ -15,7 +15,6 @@ def test_flatten_and_macros(tmp_path):
     todos = find_todos(source)
     assert 'fix this' in todos
 
-
 def test_replace_newcommands():
     tex = Path('tests/sample.tex')
     source = flatten_tex(tex)
