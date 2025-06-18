@@ -1,0 +1,174 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/main.py b/main.py
+index 45c711cb4929860314f9d1f4ce8e3eb254365c8a..ba7633693eb2d990b091a3fb4b51d96ddddcb72d 100644
+--- a/main.py
++++ b/main.py
+@@ -1,43 +1,47 @@
+ import argparse
+ from pathlib import Path
+ from pylatexenc.latex2text import LatexNodes2Text
+ from pfread.parser.latex_flatten import flatten_tex
+ from pfread.parser.macro_parser import replace_newcommands
+ from pfread.analysis.grammar_check import check_text
+ from pfread.analysis.todo_finder import find_todos
++from pfread.analysis.proofreader import proofread_document
+ 
+ 
+ def main():
+     parser = argparse.ArgumentParser(description="Proofread LaTeX paper")
+     parser.add_argument("tex_file", type=Path, nargs="?", default=Path("WorkFolder") / "main.tex", help="Path to main.tex inside the downloaded project",
+     )
+     args = parser.parse_args()
+ 
+     tmp_dir = Path('outputs') 
+     tmp_dir.mkdir(exist_ok=True)
+ 
+     # Step 1: flatten inputs
+     flattened = flatten_tex(args.tex_file)
+     flat_path = tmp_dir / "flattened.tex"
+     flat_path.write_text(flattened, encoding="utf-8")
+     print('created flattend inputs')
+ 
+     # Step 2: expand custom macros
+     replaced = replace_newcommands(flattened)
+     replaced_path = tmp_dir / "expanded.tex"
+     replaced_path.write_text(replaced, encoding="utf-8")
+     print('replaced custom macros')
+ 
+     text = LatexNodes2Text().latex_to_text(replaced).strip()
+ 
+     # print("Grammar Suggestions:")
+     # for msg in check_text(text):
+     #     print(" -", msg)
+ 
+     # print("\nTODOs:")
+     # for todo in find_todos(flattened):
+     #     print(" -", todo)
+ 
++    # Run LLM-based proofreading over sections and sentences
++    proofread_document(replaced, tmp_dir)
++
+ 
+ if __name__ == "__main__":
+     main()
+diff --git a/pfread/analysis/proofreader.py b/pfread/analysis/proofreader.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..d51a21084f36490a69010ef2a87577b51fb27e5e
+--- /dev/null
++++ b/pfread/analysis/proofreader.py
+@@ -0,0 +1,55 @@
++import os
++import re
++from pathlib import Path
++from typing import List, Tuple
++
++import openai
++from pylatexenc.latex2text import LatexNodes2Text
++
++from pfread.parser.choice_expander import expand_choices
++
++
++SECTION_RE = re.compile(r"\\section\*?{([^}]*)}")
++
++
++def split_sections(source: str) -> List[Tuple[str, str]]:
++    """Return list of (section title, content) pairs."""
++    sections: List[Tuple[str, str]] = []
++    positions = [(m.start(), m.end(), m.group(1)) for m in SECTION_RE.finditer(source)]
++    if not positions:
++        return [("", source)]
++    for idx, (start, end, title) in enumerate(positions):
++        next_start = positions[idx + 1][0] if idx + 1 < len(positions) else len(source)
++        content = source[end:next_start]
++        sections.append((title, content))
++    return sections
++
++
++def split_sentences(text: str) -> List[str]:
++    plain = LatexNodes2Text().latex_to_text(text)
++    sentences = re.split(r"(?<=[.!?])\s+", plain)
++    return [s.strip() for s in sentences if s.strip()]
++
++
++def proofread_sentence(sentence: str, model: str = "gpt-3.5-turbo") -> str:
++    api_key = os.getenv("OPENAI_API_KEY")
++    if not api_key:
++        return f"[skipped] {sentence}"
++    openai.api_key = api_key
++    resp = openai.chat.completions.create(
++        model=model,
++        messages=[{"role": "user", "content": f"Proofread the following sentence:\n{sentence}"}],
++    )
++    return resp.choices[0].message.content.strip()
++
++
++def proofread_document(source: str, out_dir: Path) -> None:
++    variants = expand_choices(source)
++    out_dir.mkdir(parents=True, exist_ok=True)
++    for i, variant in enumerate(variants, start=1):
++        variant_file = out_dir / f"variant_{i}.tex"
++        variant_file.write_text(variant, encoding="utf-8")
++        for title, content in split_sections(variant):
++            for sentence in split_sentences(content):
++                suggestion = proofread_sentence(sentence)
++                print(f"[{variant_file.name}] ({title}) {suggestion}")
+diff --git a/pfread/parser/choice_expander.py b/pfread/parser/choice_expander.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..22ea3946b7b5970cefd83792a3cff1282ddde36a
+--- /dev/null
++++ b/pfread/parser/choice_expander.py
+@@ -0,0 +1,23 @@
++import re
++from typing import List
++
++CHOICE_RE = re.compile(r"\\choice\{([^{}]*)\}\{([^{}]*)\}")
++
++
++def expand_choices(source: str) -> List[str]:
++    """Expand \choice{A}{B} commands, producing all option variants."""
++
++    def _expand(text: str) -> List[str]:
++        match = CHOICE_RE.search(text)
++        if not match:
++            return [text]
++        before = text[: match.start()]
++        after = text[match.end() :]
++        options = [match.group(1), match.group(2)]
++        results: List[str] = []
++        for opt in options:
++            for rest in _expand(after):
++                results.append(before + opt + rest)
++        return results
++
++    return _expand(source)
+diff --git a/requirements.txt b/requirements.txt
+index d6e37aa68c5b49aa5e96c2617417195804ffe008..b161639832c74d3a07154552c978fda7a89e6cd8 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,4 +1,5 @@
+ pylatexenc
+ TexSoup
+ bibtexparser
+ proselint
++openai
+diff --git a/tests/test_choice.py b/tests/test_choice.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..39958ea35a9b2d207afb56fcc2e83575f1730a8e
+--- /dev/null
++++ b/tests/test_choice.py
+@@ -0,0 +1,12 @@
++import sys, os
++sys.path.insert(0, os.path.abspath('.'))
++
++from pfread.parser.choice_expander import expand_choices
++
++
++def test_expand_choices():
++    source = "A \\choice{B}{C} D"
++    variants = expand_choices(source)
++    assert "A B D" in variants
++    assert "A C D" in variants
++    assert len(variants) == 2
+ 
+EOF
+)

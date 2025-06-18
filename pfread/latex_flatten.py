@@ -25,3 +25,23 @@ def flatten_tex(path: Path) -> str:
             return match.group(0)
 
     return pattern.sub(replacer, source)
+
+def clean_tex(latex_str: str) -> str:
+    # Remove LaTeX inline and full-line comments (ignores escaped %)
+    no_line_comments = re.sub(r'(?<!\\)%.*', '', latex_str)
+
+    # Remove \begin{comment} ... \end{comment} blocks (multiline)
+    no_comment_env = re.sub(
+        r'\\begin\{comment\}.*?\\end\{comment\}',
+        '',
+        no_line_comments,
+        flags=re.DOTALL
+    )
+
+    # Remove consecutive empty lines (collapse to one)
+    no_extra_newlines = re.sub(r'\n\s*\n+', '\n\n', no_comment_env)
+
+    # Strip leading/trailing whitespace
+    cleaned = no_extra_newlines.strip()
+
+    return cleaned
