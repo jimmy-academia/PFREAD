@@ -1,5 +1,0 @@
-pylatexenc
-TexSoup
-bibtexparser
-proselint
-openai

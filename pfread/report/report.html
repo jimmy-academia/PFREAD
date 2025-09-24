@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PFREAD Proofreading Report</title>
+  <link rel="stylesheet" href="report.css" />
+</head>
+<body>
+  <header>
+    <h1>PFREAD Proofreading Report</h1>
+    <div id="meta"></div>
+  </header>
+  <section id="filters">
+    <label>Phase <select id="filter-phase"></select></label>
+    <label>Type <select id="filter-type"></select></label>
+    <label>Severity <select id="filter-severity"></select></label>
+    <label>File <select id="filter-file"></select></label>
+  </section>
+  <main>
+    <table id="issues-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Phase</th>
+          <th>Type</th>
+          <th>Severity</th>
+          <th>File</th>
+          <th>Line</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <aside id="details">
+      <h2>Issue Details</h2>
+      <pre id="excerpt"></pre>
+      <p><strong>Suggestion:</strong> <span id="suggestion"></span></p>
+      <p><strong>Explanation:</strong> <span id="explanation"></span></p>
+    </aside>
+  </main>
+  <section id="review">
+    <h2>Whole-Paper Review</h2>
+    <p id="review-summary"></p>
+    <div>
+      <h3>Strengths</h3>
+      <ul id="review-strengths"></ul>
+    </div>
+    <div>
+      <h3>Weaknesses</h3>
+      <ul id="review-weaknesses"></ul>
+    </div>
+    <div>
+      <h3>Top Fixes</h3>
+      <ul id="review-fixes"></ul>
+    </div>
+    <div>
+      <h3>Missing References</h3>
+      <ul id="review-missing"></ul>
+    </div>
+  </section>
+  <script src="report.js"></script>
+</body>
+</html>
