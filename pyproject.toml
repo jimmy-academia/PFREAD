@@ -1,9 +1,11 @@
 [project]
 name = "pfread"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "LaTeX-aware proofreading toolkit"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "openai>=1.88.0",
-]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
