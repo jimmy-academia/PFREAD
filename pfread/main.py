@@ -9,10 +9,34 @@ from pfread.utils import io
 from pfread.utils.schema import IssueIdGenerator, findings_json
 from pfread.utils.telemetry import Telemetry
 
+PASS_NAMES = ("typo", "cross", "paragraph", "review")
+
+
+def parse_mode(value):
+    if value == "all":
+        return set(PASS_NAMES)
+    if value in PASS_NAMES:
+        return {value}
+    parts = [item.strip() for item in value.split(",") if item.strip()]
+    if not parts:
+        raise argparse.ArgumentTypeError("Mode cannot be empty")
+    selected = set()
+    for item in parts:
+        if item in PASS_NAMES:
+            selected.add(item)
+            continue
+        if not item.isdigit():
+            raise argparse.ArgumentTypeError(f"Unknown mode '{item}'")
+        index = int(item)
+        if index < 1 or index > len(PASS_NAMES):
+            raise argparse.ArgumentTypeError(f"Mode '{item}' out of range")
+        selected.add(PASS_NAMES[index - 1])
+    return selected
+
 
 def build_parser():
     parser = argparse.ArgumentParser(description="LaTeX-aware proofreading pipeline")
-    parser.add_argument("--mode", choices=["all", "typo", "cross", "paragraph", "review"], default="all")
+    parser.add_argument("--mode", type=parse_mode, default=parse_mode("all"))
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--json", dest="json_path", type=Path, required=True)
     parser.add_argument("--diff", dest="diff_path", type=Path, required=False)
@@ -63,7 +87,7 @@ def run_cli(argv=None):
     issues = []
     diff_text = ""
 
-    if args.mode in {"all", "typo"}:
+    if "typo" in args.mode:
         telemetry.start_timer("typo")
         typo_issues, edits, diff_text = run_sentences_pass(text, offset_index, llm_client, generator)
         telemetry.stop_timer("typo")
@@ -73,7 +97,7 @@ def run_cli(argv=None):
         elif args.diff_path:
             io.write_text(args.diff_path, "")
 
-    if args.mode in {"all", "cross"}:
+    if "cross" in args.mode:
         telemetry.start_timer("cross")
         cross_issues, label_index = run_cross_pass(file_records, offset_index, args.bib, generator)
         telemetry.stop_timer("cross")
@@ -82,14 +106,14 @@ def run_cli(argv=None):
         label_payload = {key: value for key, value in label_index.items()}
         io.write_json(label_path, label_payload)
 
-    if args.mode in {"all", "paragraph"}:
+    if "paragraph" in args.mode:
         telemetry.start_timer("paragraph")
         paragraph_issues = run_paragraph_pass(text, offset_index, llm_client, generator)
         telemetry.stop_timer("paragraph")
         issues.extend(paragraph_issues)
 
     review = {"summary": "", "strengths": [], "weaknesses": [], "top_fixes": [], "missing_refs": []}
-    if args.mode in {"all", "review"}:
+    if "review" in args.mode:
         telemetry.start_timer("review")
         review = run_review_pass(file_records, llm_client, args.venue)
         telemetry.stop_timer("review")
@@ -114,7 +138,7 @@ def run_cli(argv=None):
     metadata["timestamp"] = timestamp
     io.write_json(metadata_path, metadata)
 
-    if args.mode not in {"all", "typo"} and args.diff_path:
+    if "typo" not in args.mode and args.diff_path:
         io.write_text(args.diff_path, diff_text)
 
     return {

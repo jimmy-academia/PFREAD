@@ -33,6 +33,8 @@ python main.py \
 
 ### Modes
 
+Passes can be selected by name or by number (1=typo, 2=cross, 3=paragraph, 4=review). Comma-separated numbers run multiple passes, e.g. `--mode 1,3`.
+
 * `all` – run every pass (sentence typos, cross-distance checks, paragraph diagnostics, whole-paper review).
 * `typo` – sentence-level proofreading only.
 * `cross` – reference, citation, acronym, and style validation.
